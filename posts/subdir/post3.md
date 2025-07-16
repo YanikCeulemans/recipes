@@ -1,7 +1,7 @@
 ---
 layout: post
 title: A post in sub-dir
-author: @k_cieslak
+author: k_cieslak
 published: 2020-04-29
 ---
 # A post in sub-dir

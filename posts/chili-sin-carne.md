@@ -1,14 +1,21 @@
 ---
 layout: post
 title: Chili sin carne
-author: @yanik
+author: "@yanik"
 published: 2025-07-15
+tags:
+    - vegan
+    - mexican
+    - spicey
+    - tortillas
+totalTime: 45mins
 ---
-A vegan dish with, among others, bell peppers, kidney beans and rice, wrapped up in a tortillas
+A vegan dish with, among others, bell peppers, kidney beans, tomato paste and rice, wrapped up in a tortilla.
 
 <!--more-->
 
 # Ingredients
+
 Serving: 2 people
 
 - Butter: 1 tbsp
@@ -24,6 +31,7 @@ Serving: 2 people
 - Pepper (or harisa if you like spicey): to taste
 
 # Instructions
+
 1. Dice the onion
 2. Dice the bell peppers, dice the garlic and crush it with the flat side of your knife
 3. Heat up the butter in a large skillet
