@@ -1,8 +1,8 @@
 ---
-layout: post
-title: A post in sub-dir
-author: k_cieslak
-published: 2020-04-29
+Layout: post
+Title: A post in sub-dir
+Author: k_cieslak
+Published: 2020-04-29
 ---
 # A post in sub-dir
 

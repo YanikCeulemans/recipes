@@ -1,26 +1,33 @@
 #r "../_lib/Fornax.Core.dll"
 #r "../_lib/Markdig.dll"
-#r "nuget: YamlDotNet"
+#r "nuget: Legivel"
 
 open System
 open System.IO
 open Markdig
 open Markdig.Syntax
 open Markdig.Extensions.Yaml
-open YamlDotNet.Serialization
-open YamlDotNet.Serialization.NamingConventions
+open Legivel.Serialization
 
 type PostConfig = { disableLiveRefresh: bool }
 
+type Prop = { Key: string; Value: string }
+
+type PostMetadata = {
+    Layout: string
+    Title: string
+    Author: string option
+    Published: string option
+    Tags: string list option
+    Props: Prop list option
+}
+
 type Post = {
-    file: string
-    link: string
-    title: string
-    author: string option
-    published: System.DateOnly option
-    tags: string list
-    content: string
-    summary: string
+    File: string
+    Link: string
+    Content: string
+    Summary: string
+    Metadata: PostMetadata
 }
 
 let contentDir = "posts"
@@ -36,55 +43,24 @@ let isSeparator (input: string) = input.StartsWith "---"
 
 let isSummarySeparator (input: string) = input.Contains "<!--more-->"
 
-[<CLIMutable>]
-type PostMetadata = {
-    Layout: string
-    Title: string
-    Author: string option
-    Published: DateOnly option
-    /// can be null due to deserialisation
-    Tags: string array
-    TotalTime: string option
-}
-
-let yamlDeserializer =
-    DeserializerBuilder()
-        .WithNamingConvention(CamelCaseNamingConvention.Instance)
-        .Build()
-
 ///`fileContent` - content of page to parse. Usually whole content of `.md` file
 ///returns content of config that should be used for the page
 let getConfig (fileContent: string) : PostMetadata =
     let document = Markdown.Parse(fileContent, markdownPipeline)
     let b = document.Descendants<YamlFrontMatterBlock>() |> Seq.head
-    let frontMatterText = $"---\n{b.Lines.ToString()}\n..."
+    // let frontMatterText = $"---\n{b.Lines.ToString()}\n..."
+    let frontMatterText = b.Lines.ToString()
 
     try
-        yamlDeserializer.Deserialize<PostMetadata> frontMatterText
+        match Deserialize<PostMetadata> frontMatterText with
+        | [ DeserializeResult.Success { Data = parsed } ] -> parsed
+        | other -> failwith $"parsing failed, got: %A{other}"
     with e ->
-        exn ("could not deserialize frontmatter as yaml", e) |> raise
-
-(*
-    let fileContent = fileContent.Split '\n'
-    let fileContent = fileContent |> Array.skip 1 //First line must be ---
-    let indexOfSeperator = fileContent |> Array.findIndex isSeparator
-
-    let splitKey (line: string) =
-        let seperatorIndex = line.IndexOf(':')
-
-        if seperatorIndex > 0 then
-            let key = line.[.. seperatorIndex - 1].Trim().ToLower()
-            let value = line.[seperatorIndex + 1 ..].Trim()
-            Some(key, value)
-        else
-            None
-
-    fileContent
-    |> Array.splitAt indexOfSeperator
-    |> fst
-    |> Seq.choose splitKey
-    |> Map.ofSeq
-    *)
+        exn (
+            $"could not deserialize frontmatter as yaml\nfront mattter to parse was:\n{frontMatterText}",
+            e
+        )
+        |> raise
 
 ///`fileContent` - content of page to parse. Usually whole content of `.md` file
 ///returns HTML version of content of the page
@@ -107,7 +83,7 @@ let getContent (fileContent: string) =
     Markdown.ToHtml(summary, markdownPipeline),
     Markdown.ToHtml(content, markdownPipeline)
 
-let trimString (str: string) = str.Trim().TrimEnd('"').TrimStart('"')
+let trimString (str: string) = str.Trim().TrimEnd('"').TrimStart '"'
 
 let loadFile (rootDir: string) (n: string) =
     let text = File.ReadAllText n
@@ -116,7 +92,7 @@ let loadFile (rootDir: string) (n: string) =
     let summary, content = getContent text
 
     let chopLength =
-        if rootDir.EndsWith(Path.DirectorySeparatorChar) then
+        if rootDir.EndsWith Path.DirectorySeparatorChar then
             rootDir.Length
         else
             rootDir.Length + 1
@@ -134,26 +110,28 @@ let loadFile (rootDir: string) (n: string) =
             .Combine(dirPart, (n |> Path.GetFileNameWithoutExtension) + ".html")
             .Replace("\\", "/")
 
+    let layout = config.Layout |> trimString
     let title = config.Title |> trimString
     let author = config.Author |> Option.map trimString
+    let props = config.Props
 
     let published = config.Published
 
-    let tags =
-        config.Tags
-        |> Option.ofObj
-        |> Option.map List.ofArray
-        |> Option.defaultValue []
+    let tags = config.Tags
 
     {
-        file = file
-        link = link
-        title = title
-        author = author
-        published = published
-        tags = tags
-        content = content
-        summary = summary
+        File = file
+        Link = link
+        Content = content
+        Summary = summary
+        Metadata = {
+            Layout = layout
+            Title = title
+            Author = author
+            Published = published
+            Tags = tags
+            Props = props
+        }
     }
 
 let loader (projectRoot: string) (siteContent: SiteContents) =
@@ -166,5 +144,5 @@ let loader (projectRoot: string) (siteContent: SiteContents) =
     |> Array.map (loadFile projectRoot)
     |> Array.iter siteContent.Add
 
-    siteContent.Add({ disableLiveRefresh = false })
+    siteContent.Add { disableLiveRefresh = false }
     siteContent

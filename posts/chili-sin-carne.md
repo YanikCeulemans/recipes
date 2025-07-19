@@ -1,14 +1,18 @@
 ---
-layout: post
-title: Chili sin carne
-author: "@yanik"
-published: 2025-07-15
-tags:
+Layout: post
+Title: Chili sin carne
+Author: "@yanik"
+Published: 2025-07-15
+Tags:
     - vegan
     - mexican
     - spicey
     - tortillas
-totalTime: 45mins
+Props:
+    - Key: Dish
+      Value: Dinner
+    - Key: Total time
+      Value: 45mins
 ---
 A vegan dish with, among others, bell peppers, kidney beans, tomato paste and rice, wrapped up in a tortilla.
 
