@@ -41,6 +41,12 @@ module KdlNodesParser =
             let a = runParser ax doc
             Result.map f a
 
+    module ArgParsers =
+        let str (v: KdlValue) : string =
+            match v.Type with
+            | "string" -> v :?> KdlValue<string> |> _.Value
+            | other ->
+                failwith $"expected a kdl string value, instead got: {other}"
 
     module NodeParsers =
         let node
@@ -54,12 +60,22 @@ module KdlNodesParser =
                         $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
                 | Some n -> runParser parser n.Children
 
-        let nodeArgs args = failwith ""
+        let nodeArgs
+            (name: string)
+            (argParser: KdlValue -> 'a)
+            : KdlNodesParser<'a array> =
+            fun doc ->
+                match doc.Nodes |> Seq.tryFind (_.Identifier >> (=) name) with
+                | None ->
+                    Error
+                        $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
+                | Some n ->
+                    n.Arguments |> Seq.map argParser |> Array.ofSeq |> Ok
 
-        let str: KdlNodesParser<string> = failwith "todo"
+    // let str: KdlNodesParser<string> = failwith "todo"
 
-        let many (parser: KdlNodesParser<'a>) : KdlNodesParser<'a array> =
-            failwith "todo"
+    // let many (parser: KdlNodesParser<'a>) : KdlNodesParser<'a array> =
+    //     failwith "todo"
 
     [<AutoOpen>]
     module ComputationExpression =
@@ -92,14 +108,12 @@ let loadFile (filePath: string) : Recipe =
 
     let p: KdlNodesParser<Recipe> =
         kdlNodesParser {
-            let! name = NodeParsers.node "name" NodeParsers.str
-
-            and! tags =
-                NodeParsers.node "tags" (NodeParsers.many NodeParsers.str)
+            let! name = NodeParsers.nodeArgs "name" ArgParsers.str
+            and! tags = NodeParsers.nodeArgs "tags" ArgParsers.str
 
             return {
-                Name = ""
-                Tags = None
+                Name = name |> Array.head // TODO: rework to expect a single arg
+                Tags = Some tags // TODO: implement optional parsing
                 KeyInfo = None
                 Ingredients = { Serving = 0; Ingredients = Set.empty }
                 Instructions = [||]

@@ -13,12 +13,24 @@ let postPredicate (projectRoot: string, page: string) =
     else
         false
 
+let recipePredicate (projectRoot: string, page: string) =
+    let fileName = Path.Combine(projectRoot, page)
+    let ext = Path.GetExtension page
+
+    ext = ".kdl"
+// if ext = ".kdl" then
+//     let ctn = File.ReadAllText fileName
+//     page.Contains "_public" |> not && ctn.Contains "Layout: post"
+// else
+//     false
+
 let staticPredicate (projectRoot: string, page: string) =
     let ext = Path.GetExtension page
 
     let fileShouldBeExcluded =
         ext = ".fsx"
         || ext = ".md"
+        || ext = ".kdl"
         || page.Contains "_public"
         || page.Contains "_bin"
         || page.Contains "_lib"
@@ -47,6 +59,11 @@ let config = {
         {
             Script = "post.fsx"
             Trigger = OnFilePredicate postPredicate
+            OutputFile = ChangeExtension "html"
+        }
+        {
+            Script = "recipe.fsx"
+            Trigger = OnFilePredicate recipePredicate
             OutputFile = ChangeExtension "html"
         }
         {
