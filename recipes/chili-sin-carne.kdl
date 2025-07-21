@@ -1,15 +1,15 @@
 recipe {
   name "Chili sin carne"
-  tags vegan mexican spicey savory tortillas
+  tags "vegan" "mexican" "spicey" "savory" "tortillas"
 
   key-info {
-    dish dinner
-    total-time 45 mins
+    dish "dinner"
+    total-time 45 "mins"
   }
 
   ingredients serving=2 {
-    butter 1 tbsp
-    rice 75 g basmati
+    butter 1 "tbsp"
+    rice 75 "g" "basmati"
     onion 1
   }
 
@@ -17,5 +17,5 @@ recipe {
     "Dice the onion" \
     "Dice the bell peppers, dice the garlic and crush it with the flat side of your knife" \
     "Heat up the butter in a large skillet" \
-    "Fry the diced onion until translucent" \
+    "Fry the diced onion until translucent"
 }

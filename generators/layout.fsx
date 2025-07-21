@@ -1,7 +1,7 @@
 #r "../_lib/Fornax.Core.dll"
 #if !FORNAX
-#load "../loaders/postloader.fsx"
 #load "../loaders/recipeloader.fsx"
+#load "../loaders/postloader.fsx"
 #load "../loaders/pageloader.fsx"
 #load "../loaders/globalloader.fsx"
 #endif
@@ -160,6 +160,20 @@ let postLayout (useSummary: bool) (post: Postloader.Post) =
             div [ Class "content article-body" ] [
                 !!(if useSummary then post.Summary else post.Content)
 
+            ]
+        ]
+    ]
+
+let recipeLayout (recipe: Recipeloader.Recipe) =
+    div [ Class "card article" ] [
+        div [ Class "card-content" ] [
+            div [ Class "media-content has-text-centered" ] [
+                p [ Class "title article-title" ] [
+                    a [ Href "#todo" ] [ !!recipe.Name ]
+                ]
+                p [ Class "subtitle is-6 article-subtitle" ] [
+                    a [ Href "#" ] [ !!"@yanikc" ]
+                ]
             ]
         ]
     ]
