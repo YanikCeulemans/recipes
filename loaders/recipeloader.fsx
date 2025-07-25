@@ -290,6 +290,14 @@ let loadFile (filePath: string) : Recipe =
     use fs = File.OpenRead filePath
     let doc = reader.Parse fs
 
+    let keyInfoParser: KdlParser<Map<string, string>> =
+        let keyInfoChildrenParser name args _ =
+            ArgParsers.nth "Key info value" 0 ArgParsers.str args
+            |> Result.map (fun v -> name, v)
+            |> ofResult
+
+        NodeParsers.children keyInfoChildrenParser |> KdlParser.map Map.ofSeq
+
     let ingredientParser
         (name: string)
         (args: KdlValue array)
@@ -343,13 +351,15 @@ let loadFile (filePath: string) : Recipe =
 
             and! tags = opt (NodeParsers.args "tags" ArgParsers.str)
 
+            and! keyInfo = opt (NodeParsers.node "key-info" keyInfoParser)
+
             and! ingredients =
                 NodeParsers.nodeWith "ingredients" ingredientsParser
 
             return {
                 Name = name
                 Tags = tags
-                KeyInfo = None
+                KeyInfo = keyInfo
                 Ingredients = ingredients
                 Instructions = [||]
             }

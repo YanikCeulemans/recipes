@@ -177,6 +177,18 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                 p [ Class "subtitle is-6 article-subtitle" ] [
                     a [ Href "#" ] [ !!"@yanikc" ]
                 ]
+                match recipe.KeyInfo with
+                | None -> ()
+                | Some keyInfo ->
+                    nav [ Class "level" ] [
+                        for KeyValue(key, value) in keyInfo ->
+                            div [ Class "level-item has-text-centered" ] [
+                                div [] [
+                                    p [ Class "heading" ] [ !!key ]
+                                    p [ Class "title" ] [ !!value ]
+                                ]
+                            ]
+                    ]
             ]
             div [ Class "content article-body" ] [
                 p [] [
