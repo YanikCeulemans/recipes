@@ -165,6 +165,9 @@ let postLayout (useSummary: bool) (post: Postloader.Post) =
     ]
 
 let recipeLayout (recipe: Recipeloader.Recipe) =
+    let ingredientUnitView u =
+        !!(Recipeloader.IngredientUnit.format u)
+
     div [ Class "card article" ] [
         div [ Class "card-content" ] [
             div [ Class "media-content has-text-centered" ] [
@@ -174,6 +177,30 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                 p [ Class "subtitle is-6 article-subtitle" ] [
                     a [ Href "#" ] [ !!"@yanikc" ]
                 ]
+            ]
+            div [ Class "content article-body" ] [
+                p [] [
+                    span [] [ !!"serving: " ]
+                    span [] [ !! $"{recipe.Ingredients.Serving}" ]
+                ]
+                match recipe.Ingredients.Ingredients |> Array.ofSeq with
+                | [||] -> ()
+                | ingredients ->
+                    ul [] [
+                        for ingredient in ingredients ->
+                            li [] [
+                                span [] [
+                                    !!ingredient.Name
+                                    match ingredient.Variant with
+                                    | None -> ()
+                                    | Some v -> !! $" ({v})"
+                                    !!": "
+                                    !! $"{ingredient.Amount}"
+                                    // !!(ingredientUnitView ingredient.Unit)
+                                    ingredientUnitView ingredient.Unit
+                                ]
+                            ]
+                    ]
             ]
         ]
     ]
