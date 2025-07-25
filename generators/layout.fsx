@@ -213,6 +213,13 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                                 ]
                             ]
                     ]
+                match recipe.Instructions with
+                | [||] -> ()
+                | instructions ->
+                    ol [] [
+                        for instruction in instructions ->
+                            li [] [ span [] [ !!instruction ] ]
+                    ]
             ]
         ]
     ]

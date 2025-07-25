@@ -343,6 +343,16 @@ let loadFile (filePath: string) : Recipe =
             }
         }
 
+    let instructionsParser
+        (args: KdlValue array)
+        _props
+        : KdlParser<string array> =
+        args
+        |> Seq.map ArgParsers.str
+        |> ResultTraversable.sequenceA
+        |> Result.map Array.ofSeq
+        |> ofResult
+
     let recipeParser: KdlParser<Recipe> =
         kdlParser {
             let! name =
@@ -356,12 +366,15 @@ let loadFile (filePath: string) : Recipe =
             and! ingredients =
                 NodeParsers.nodeWith "ingredients" ingredientsParser
 
+            and! instructions =
+                NodeParsers.nodeWith "instructions" instructionsParser
+
             return {
                 Name = name
                 Tags = tags
                 KeyInfo = keyInfo
                 Ingredients = ingredients
-                Instructions = [||]
+                Instructions = instructions
             }
         }
 
