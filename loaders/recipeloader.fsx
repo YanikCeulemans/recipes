@@ -4,16 +4,43 @@
 open System.IO
 open Kadlet
 
+module Prelude =
+    let flip f a b = f b a
+
+module List =
+    let cons x xs = x :: xs
+
+module Tuple =
+    let create a b = a, b
+
 module Result =
+    let ap
+        (mf: Result<'a -> 'b, string>)
+        (ma: Result<'a, string>)
+        : Result<'b, string> =
+        match mf, ma with
+        | Error errF, Error errA -> Error $"{errF}; {errA}"
+        | Error err, _
+        | _, Error err -> Error err
+        | Ok f, Ok a -> Ok(f a)
+
+[<AutoOpen>]
+module ResultOperators =
+    let (<!>) f ma = Result.map f ma
+
+    let (<*>) mf ma = Result.ap mf ma
+
+module ResultTraversable =
+    open Prelude
+
     let sequenceA (xs: Result<'a, string> seq) : Result<'a seq, string> =
-        let go curr acc =
-            match acc, curr with
-            | Error errAcc, Error errCurr -> Error $"{errCurr}; {errAcc}"
-            | Error err, _
-            | _, Error err -> Error err
-            | Ok a, Ok c -> Ok(c :: a)
+        let go curr acc = flip List.cons <!> acc <*> curr
 
         Seq.foldBack go xs (Ok []) |> Result.map seq
+
+module ResultValidation =
+    let requireSingle (reason: 'e) (m: Result<'a array, 'e>) = failwith "todo"
+
 
 type Ingredient = {
     Name: string
@@ -35,18 +62,43 @@ type Recipe = {
     Instructions: string array
 }
 
-type KdlNodesParser<'a> = KdlDocument -> Result<'a, string>
+type KdlParser<'a> = KdlDocument -> Result<'a, string>
 
 module KdlNodesParser =
-    let runParser (parser: KdlNodesParser<'a>) doc : Result<'a, string> =
-        parser doc
+    let runParser (parser: KdlParser<'a>) doc : Result<'a, string> = parser doc
 
-    let rtn (x: 'a) : KdlNodesParser<'a> = fun _ -> Ok x
+    let rtn (x: 'a) : KdlParser<'a> = fun _ -> Ok x
 
-    let map (f: 'a -> 'b) (ax: KdlNodesParser<'a>) : KdlNodesParser<'b> =
+    let fail (e: string) : KdlParser<'a> = fun _ -> Error e
+
+    let map (f: 'a -> 'b) (ax: KdlParser<'a>) : KdlParser<'b> =
         fun doc ->
             let a = runParser ax doc
             Result.map f a
+
+    let alt (parserB: KdlParser<'a>) (parserA: KdlParser<'a>) : KdlParser<'a> =
+        fun doc ->
+            match runParser parserA doc with
+            | Ok a -> Ok a
+            | Error errA ->
+                match runParser parserB doc with
+                | Ok b -> Ok b
+                | Error errB -> Error $"{errA}; {errB}"
+
+    let requireSingle
+        (reason: string)
+        (parser: KdlParser<'a array>)
+        : KdlParser<'a> =
+        fun doc ->
+            runParser parser doc
+            |> Result.bind (fun xs ->
+                match xs with
+                | [| x |] -> Ok x
+                | _ -> Error reason
+            )
+
+    let opt (parser: KdlParser<'a>) : KdlParser<'a option> =
+        parser |> map Some |> alt (rtn None)
 
     let private firstNodeNamed (name: string) (nodes: KdlNode seq) =
         nodes |> Seq.tryFind (fun n -> n.Identifier = name)
@@ -58,10 +110,7 @@ module KdlNodesParser =
             | _ -> Error "expected a kdl string value, instead got: %A{v}"
 
     module NodeParsers =
-        let node
-            (name: string)
-            (parser: KdlNodesParser<'a>)
-            : KdlNodesParser<'a> =
+        let node (name: string) (parser: KdlParser<'a>) : KdlParser<'a> =
             fun doc ->
                 match firstNodeNamed name doc.Nodes with
                 | None ->
@@ -69,10 +118,10 @@ module KdlNodesParser =
                         $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
                 | Some n -> runParser parser n.Children
 
-        let nodeArgs
+        let args
             (name: string)
             (argParser: KdlValue -> Result<'a, string>)
-            : KdlNodesParser<'a array> =
+            : KdlParser<'a array> =
             fun doc ->
                 match firstNodeNamed name doc.Nodes with
                 | None ->
@@ -81,7 +130,7 @@ module KdlNodesParser =
                 | Some n ->
                     n.Arguments
                     |> Seq.map argParser
-                    |> Result.sequenceA
+                    |> ResultTraversable.sequenceA
                     |> Result.map Array.ofSeq
 
     // let str: KdlNodesParser<string> = failwith "todo"
@@ -95,17 +144,13 @@ module KdlNodesParser =
             member _.BindReturn(ax, f) = map f ax
 
             member _.MergeSources
-                (ma: KdlNodesParser<'a>, mb: KdlNodesParser<'b>)
-                : KdlNodesParser<'a * 'b> =
+                (ma: KdlParser<'a>, mb: KdlParser<'b>)
+                : KdlParser<'a * 'b> =
                 fun nodes ->
                     let resA = runParser ma nodes
                     let resB = runParser mb nodes
 
-                    match resA, resB with
-                    | Error errA, Error errB -> Error($"{errA}; {errB}")
-                    | Error err, _
-                    | _, Error err -> Error err
-                    | Ok a, Ok b -> Ok(a, b)
+                    Tuple.create <!> resA <*> resB
 
 
         let kdlNodesParser = KdlNodesParserBuilder()
@@ -120,14 +165,17 @@ let loadFile (filePath: string) : Recipe =
     use fs = File.OpenRead filePath
     let doc = reader.Parse fs
 
-    let recipeParser: KdlNodesParser<Recipe> =
+    let recipeParser: KdlParser<Recipe> =
         kdlNodesParser {
-            let! name = NodeParsers.nodeArgs "name" ArgParsers.str
-            and! tags = NodeParsers.nodeArgs "tags" ArgParsers.str
+            let! name =
+                NodeParsers.args "name" ArgParsers.str
+                |> requireSingle "a recipe must only have a single name"
+
+            and! tags = opt (NodeParsers.args "tags" ArgParsers.str)
 
             return {
-                Name = name |> Array.head // TODO: rework to expect a single arg
-                Tags = Some tags // TODO: implement optional parsing
+                Name = name
+                Tags = tags
                 KeyInfo = None
                 Ingredients = { Serving = 0; Ingredients = Set.empty }
                 Instructions = [||]
