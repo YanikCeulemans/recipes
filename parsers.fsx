@@ -1,5 +1,5 @@
 #r "nuget: Kadlet"
-#r "nuget: FsToolkit.ErrorHandling"
+#r "nuget: FsToolkit.ErrorHandling, 4.18.0,usepackagetargets=true"
 
 #load "prelude.fsx"
 

@@ -1,5 +1,5 @@
 #r "../_lib/Fornax.Core.dll"
-#r "nuget: FsToolkit.ErrorHandling"
+#r "nuget: FsToolkit.ErrorHandling, 4.18.0,usepackagetargets=true"
 #r "nuget: Kadlet"
 
 #load "../prelude.fsx"
@@ -156,7 +156,8 @@ module Recipe =
             >> Result.mapError (String.concat "; ")
         )
         |> Seq.sequenceResultA
-        |> Result.mapError List.ofArray
+        |> Result.mapError List.ofSeq
+        |> Result.map Array.ofSeq
         |> KdlParser.ofValidation
 
     let parser: KdlParser<Recipe> =
@@ -179,7 +180,8 @@ module Recipe =
                 >> Result.mapError (String.concat "; ")
             )
             |> Seq.sequenceResultA
-            |> Result.mapError List.ofArray
+            |> Result.mapError List.ofSeq
+            |> Result.map Array.ofSeq
             |> KdlParser.ofValidation
 
         kdlParser {
