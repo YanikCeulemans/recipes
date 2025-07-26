@@ -9,10 +9,10 @@ recipe {
   }
 
   ingredients serving=2 {
-    butter 1 "tbsp"
-    rice 75 "g" "basmati"
-    onion 1
-    garlic 1 "clove"
+    i "butter" 1 "tbsp"
+    i "rice" 75 "g" "basmati"
+    i "onion" 1
+    i "garlic" 1 "clove"
     // "bell pepper" 2
     // kidney beans: 1 can
     // corn: 1 small can

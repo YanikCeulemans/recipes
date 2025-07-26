@@ -3,44 +3,46 @@
 
 #load "prelude.fsx"
 
-open Prelude
+open FsToolkit.ErrorHandling
 open Kadlet
 
-type KdlParser<'a> = KdlDocument -> Result<'a, string>
+type KdlParser<'a> = KdlDocument -> Validation<'a, string>
 
 module KdlParser =
-    let runParser (parser: KdlParser<'a>) doc : Result<'a, string> = parser doc
+    let runParser
+        (parser: KdlParser<'a>)
+        (doc: KdlDocument)
+        : Validation<'a, string> =
+        parser doc
 
     let rtn (x: 'a) : KdlParser<'a> = fun _ -> Ok x
-
-    let fail (e: string) : KdlParser<'a> = fun _ -> Error e
 
     let map (f: 'a -> 'b) (ax: KdlParser<'a>) : KdlParser<'b> =
         fun doc ->
             let a = runParser ax doc
-            Result.map f a
+            Validation.map f a
 
     let andThen
-        (f: 'a -> Result<'b, string>)
+        (f: 'a -> Validation<'b, string>)
         (ma: KdlParser<'a>)
         : KdlParser<'b> =
         fun doc ->
             let a = runParser ma doc
-            Result.bind f a
+            Validation.bind f a
 
     let alt (parserB: KdlParser<'a>) (parserA: KdlParser<'a>) : KdlParser<'a> =
         fun doc ->
             match runParser parserA doc with
             | Ok a -> Ok a
-            | Error errA ->
+            | Error errsA ->
                 match runParser parserB doc with
                 | Ok b -> Ok b
-                | Error errB -> Error $"{errA}; {errB}"
+                | Error errsB -> Error(errsA @ errsB)
 
     let opt (parser: KdlParser<'a>) : KdlParser<'a option> =
         parser |> map Some |> alt (rtn None)
 
-    let ofResult (result: Result<'a, string>) : KdlParser<'a> =
+    let ofValidation (result: Validation<'a, string>) : KdlParser<'a> =
         fun _doc -> result
 
     let ap
@@ -51,84 +53,47 @@ module KdlParser =
             let resA = runParser parserA doc
             let resF = runParser parserF doc
 
-            Result.ap resA resF
-
+            Validation.apply resF resA
 
     let sequenceA (parsers: KdlParser<'a> array) : KdlParser<'a array> =
-        let go curr acc = rtn List.cons |> ap curr |> ap acc
+        let go curr acc =
+            rtn Prelude.List.cons |> ap curr |> ap acc
 
         Array.foldBack go parsers (rtn []) |> map Array.ofList
 
-    let requireSingle
-        (reason: string)
-        (parser: KdlParser<'a array>)
-        : KdlParser<'a> =
-        fun doc ->
-            runParser parser doc
-            |> Result.bind (fun xs ->
-                match xs with
-                | [| x |] -> Ok x
-                | _ -> Error reason
-            )
-
-    let requireSome
-        (reason: string)
-        (parser: KdlParser<'a option>)
-        : KdlParser<'a> =
-        fun doc ->
-            runParser parser doc
-            |> Result.bind (fun xs ->
-                match xs with
-                | Some x -> Ok x
-                | _ -> Error reason
-            )
-
-    let private firstNodeNamed (name: string) (nodes: KdlNode seq) =
-        nodes |> Seq.tryFind (fun n -> n.Identifier = name)
-
-    module ArgParsers =
-        let nth
-            (name: string)
-            (index: int)
-            (parser: KdlValue -> Result<'a, string>)
-            (args: KdlValue array)
-            : Result<'a, string> =
-            Array.tryItem index args
-            |> Result.requireSome
-                $"missing '%s{name}' argument at index %d{index}"
-            |> Result.bind parser
-
-        let nthOpt
-            (name: string)
-            (index: int)
-            (parser: KdlValue -> Result<'a, string>)
-            (args: KdlValue array)
-            : Result<'a option, string> =
-            match Array.tryItem index args with
-            | None -> Ok None
-            | Some a ->
-                parser a
-                |> Result.mapError (fun err ->
-                    $"parsing error for arg '%s{name}' at index %d{index}: %s{err}"
+    module Combinators =
+        let requireSingle
+            (reason: string)
+            (parser: KdlParser<'a array>)
+            : KdlParser<'a> =
+            fun doc ->
+                runParser parser doc
+                |> Result.bind (fun xs ->
+                    match xs with
+                    | [| x |] -> Ok x
+                    | _ -> Validation.error reason
                 )
-                |> Result.map Some
 
-        let str (v: KdlValue) : Result<string, string> =
-            match v with
-            | :? KdlString as s -> Ok s.Value
-            | _ -> Error "expected a kdl string value, instead got: %A{v}"
+        let requireSome
+            (reason: string)
+            (parser: KdlParser<'a option>)
+            : KdlParser<'a> =
+            fun doc ->
+                runParser parser doc
+                |> Result.bind (fun xs ->
+                    match xs with
+                    | Some x -> Ok x
+                    | _ -> Validation.error reason
+                )
 
-        let int (v: KdlValue) : Result<int, string> =
-            match v with
-            | :? KdlInt32 as s -> Ok s.Value
-            | _ -> Error "expected a kdl int32 value, instead got: %A{v}"
+        let private firstNodeNamed (name: string) (nodes: KdlNode seq) =
+            nodes |> Seq.tryFind (fun n -> n.Identifier = name)
 
-    module NodeParsers =
         let node (name: string) (parser: KdlParser<'a>) : KdlParser<'a> =
             fun doc ->
                 match firstNodeNamed name doc.Nodes with
                 | None ->
-                    Error
+                    Validation.error
                         $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
                 | Some n -> runParser parser n.Children
 
@@ -140,7 +105,7 @@ module KdlParser =
             fun doc ->
                 match firstNodeNamed name doc.Nodes with
                 | None ->
-                    Error
+                    Validation.error
                         $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
                 | Some n ->
                     let args = Array.ofSeq n.Arguments
@@ -171,22 +136,6 @@ module KdlParser =
                 |> sequenceA
                 |> fun parser -> runParser parser doc
 
-        let args
-            (name: string)
-            (argParser: KdlValue -> Result<'a, string>)
-            : KdlParser<'a array> =
-            fun doc ->
-                match firstNodeNamed name doc.Nodes with
-                | None ->
-                    Error
-                        $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
-                | Some n ->
-                    n.Arguments
-                    |> Seq.map argParser
-                    |> Result.Traversable.sequenceA
-                    |> Result.map Array.ofSeq
-
-    [<AutoOpen>]
     module ComputationExpression =
         type KdlNodesParserBuilder() =
             member _.BindReturn(ax, f) = map f ax
@@ -194,12 +143,10 @@ module KdlParser =
             member _.MergeSources
                 (ma: KdlParser<'a>, mb: KdlParser<'b>)
                 : KdlParser<'a * 'b> =
-                rtn Tuple.create |> ap ma |> ap mb
+                rtn Prelude.Tuple.create |> ap ma |> ap mb
 
 
         let kdlParser = KdlNodesParserBuilder()
-
-open FsToolkit.ErrorHandling
 
 type KdlValueParser<'a> = KdlValue -> Validation<'a, string>
 
@@ -232,9 +179,30 @@ module KdlValueParser =
                 Validation.error
                     $"expected KDL string value, instead got: '%A{other}'"
 
-        let integer: KdlValueParser<int> =
+        let int32: KdlValueParser<int> =
             function
             | :? KdlInt32 as p -> Validation.ok p.Value
             | other ->
                 Validation.error
                     $"expected KDL int32 value, instead got: '%A{other}'"
+
+    module Collections =
+        let nth
+            (index: int)
+            (parser: KdlValueParser<'a>)
+            (args: KdlValue array)
+            : Validation<'a, string> =
+            Array.tryItem index args
+            |> Result.requireSome [
+                $"expected to find argument at index {index}, but none was found"
+            ]
+            |> Result.bind (runParser parser)
+
+        let nthOpt
+            (index: int)
+            (parser: KdlValueParser<'a>)
+            (args: KdlValue array)
+            : Validation<'a option, string> =
+            match Array.tryItem index args with
+            | None -> Validation.ok None
+            | Some a -> runParser parser a |> Validation.map Some

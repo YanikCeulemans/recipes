@@ -1,11 +1,11 @@
 #r "../_lib/Fornax.Core.dll"
+#r "nuget: FsToolkit.ErrorHandling"
 #r "nuget: Kadlet"
 
 #load "../prelude.fsx"
 #load "../parsers.fsx"
 
 open System.IO
-open Prelude
 open Kadlet
 
 type IngredientUnit =
@@ -28,40 +28,49 @@ type Ingredient = {
 }
 
 module Ingredient =
-    let create name amount theUnit variant = {
-        Name = name
-        Amount = amount
-        Unit = theUnit
-        Variant = variant
-    }
-
     open Parsers
-    open Parsers.KdlParser
+    open FsToolkit.ErrorHandling
 
     let ingredientParser
-        (name: string)
+        (_name: string)
         (args: KdlValue array)
-        _
+        (_props: Map<string, KdlValue>)
         : KdlParser<Ingredient> =
-        let ingredientUnitParser
-            (v: KdlValue)
-            : Result<IngredientUnit, string> =
-            ArgParsers.str v |> Result.map OtherIngredientUnit
+        let ingredientUnitParser: KdlValueParser<IngredientUnit> =
+            KdlValueParser.Primitives.str
+            |> KdlValueParser.map OtherIngredientUnit
 
-        let amount = ArgParsers.nth "amount" 0 ArgParsers.int args
+        validation {
+            let! name =
+                KdlValueParser.Collections.nth
+                    0
+                    KdlValueParser.Primitives.str
+                    args
 
-        let ingredientUnit =
-            ArgParsers.nthOpt "unit" 1 ingredientUnitParser args
-            |> Result.map (Option.defaultValue Pieces)
+            and! amount =
+                KdlValueParser.Collections.nth
+                    1
+                    KdlValueParser.Primitives.int32
+                    args
 
-        let variant = ArgParsers.nthOpt "variant" 2 ArgParsers.str args
+            and! ingredientUnit =
+                KdlValueParser.Collections.nthOpt 2 ingredientUnitParser args
+                |> Result.map (Option.defaultValue Pieces)
 
-        Ok create
-        |> Result.ap (Ok name)
-        |> Result.ap amount
-        |> Result.ap ingredientUnit
-        |> Result.ap variant
-        |> ofResult
+            and! variant =
+                KdlValueParser.Collections.nthOpt
+                    3
+                    KdlValueParser.Primitives.str
+                    args
+
+            return {
+                Name = name
+                Amount = amount
+                Unit = ingredientUnit
+                Variant = variant
+            }
+        }
+        |> KdlParser.ofValidation
 
 
 type Ingredients = {
@@ -71,7 +80,8 @@ type Ingredients = {
 
 module Ingredients =
     open Parsers
-    open Parsers.KdlParser
+    open Parsers.KdlParser.ComputationExpression
+    open FsToolkit.ErrorHandling
 
     let ingredientsParser
         (_args: KdlValue array)
@@ -80,12 +90,16 @@ module Ingredients =
         kdlParser {
             let! serving =
                 Map.tryFind "serving" properties
-                |> rtn
-                |> requireSome
-                    "expected to find the 'serving' property as it is required"
-                |> andThen ArgParsers.int
+                |> Result.requireSome [
+                    "expected to find the required 'serving' property, but found none"
+                ]
+                |> Result.bind (
+                    KdlValueParser.runParser KdlValueParser.Primitives.int32
+                )
+                |> KdlParser.ofValidation
 
-            and! ingredients = NodeParsers.children Ingredient.ingredientParser
+            and! ingredients =
+                KdlParser.Combinators.children Ingredient.ingredientParser
 
             return {
                 Serving = serving
@@ -104,15 +118,32 @@ type Recipe = {
 
 module Recipe =
     open Parsers
-    open Parsers.KdlParser
+    open Parsers.KdlParser.ComputationExpression
+    open FsToolkit.ErrorHandling
 
+    // TODO: Verify that the nodes here are named "i"?
     let private keyInfoParser: KdlParser<Map<string, string>> =
-        let keyInfoChildrenParser name args _ =
-            ArgParsers.nth "Key info value" 0 ArgParsers.str args
-            |> Result.map (fun v -> name, v)
-            |> ofResult
+        let keyInfoChildrenParser _ args _ =
+            validation {
+                let! name =
+                    KdlValueParser.Collections.nth
+                        0
+                        KdlValueParser.Primitives.str
+                        args
 
-        NodeParsers.children keyInfoChildrenParser |> KdlParser.map Map.ofSeq
+                and! value =
+                    KdlValueParser.Collections.nth
+                        1
+                        KdlValueParser.Primitives.str
+                        args
+
+                return name, value
+            }
+            |> KdlParser.ofValidation
+
+
+        KdlParser.Combinators.children keyInfoChildrenParser
+        |> KdlParser.map Map.ofSeq
 
 
     let private instructionsParser
@@ -120,26 +151,62 @@ module Recipe =
         _props
         : KdlParser<string array> =
         args
-        |> Seq.map ArgParsers.str
-        |> Result.Traversable.sequenceA
-        |> Result.map Array.ofSeq
-        |> ofResult
+        |> Seq.map (
+            KdlValueParser.runParser KdlValueParser.Primitives.str
+            >> Result.mapError (String.concat "; ")
+        )
+        |> Seq.sequenceResultA
+        |> Result.mapError List.ofArray
+        |> KdlParser.ofValidation
 
     let parser: KdlParser<Recipe> =
+        let firstArg
+            (parser: KdlValueParser<'a>)
+            (args: KdlValue array)
+            _
+            : KdlDocument -> Validation<'a, string> =
+            KdlValueParser.Collections.nth 0 parser args
+            |> KdlParser.ofValidation
+
+        let allArgs
+            (parser: KdlValueParser<'a>)
+            (args: KdlValue array)
+            _
+            : KdlDocument -> Validation<'a array, string> =
+            args
+            |> Array.map (
+                KdlValueParser.runParser parser
+                >> Result.mapError (String.concat "; ")
+            )
+            |> Seq.sequenceResultA
+            |> Result.mapError List.ofArray
+            |> KdlParser.ofValidation
+
         kdlParser {
             let! name =
-                NodeParsers.args "name" ArgParsers.str
-                |> requireSingle "a recipe must only have a single name"
+                KdlParser.Combinators.nodeWith
+                    "name"
+                    (firstArg KdlValueParser.Primitives.str)
 
-            and! tags = opt (NodeParsers.args "tags" ArgParsers.str)
+            and! tags =
+                KdlParser.opt (
+                    KdlParser.Combinators.nodeWith
+                        "tags"
+                        (allArgs KdlValueParser.Primitives.str)
+                )
 
-            and! keyInfo = opt (NodeParsers.node "key-info" keyInfoParser)
+            and! keyInfo =
+                KdlParser.opt (
+                    KdlParser.Combinators.node "key-info" keyInfoParser
+                )
 
             and! ingredients =
-                NodeParsers.nodeWith "ingredients" Ingredients.ingredientsParser
+                KdlParser.Combinators.nodeWith
+                    "ingredients"
+                    Ingredients.ingredientsParser
 
             and! instructions =
-                NodeParsers.nodeWith "instructions" instructionsParser
+                KdlParser.Combinators.nodeWith "instructions" instructionsParser
 
             return {
                 Name = name
@@ -158,12 +225,13 @@ let loadFile (filePath: string) : Recipe =
     use fs = File.OpenRead filePath
     let doc = reader.Parse fs
 
-    let p = Parsers.KdlParser.NodeParsers.node "recipe" Recipe.parser
+    let p = Parsers.KdlParser.Combinators.node "recipe" Recipe.parser
 
     match Parsers.KdlParser.runParser p doc with
     | Ok r -> r
-    | Error reason -> failwith $"could not parse: %s{reason}"
-
+    | Error reasons ->
+        let reason = String.concat "; " reasons
+        failwith $"could not parse: %s{reason}"
 
 let loader (projectRoot: string) (siteContent: SiteContents) =
     let recipesPath = Path.Combine(projectRoot, contentDir)

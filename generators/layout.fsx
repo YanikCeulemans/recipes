@@ -1,6 +1,6 @@
 #r "../_lib/Fornax.Core.dll"
-#if !FORNAX
 #load "../loaders/recipeloader.fsx"
+#if !FORNAX
 #load "../loaders/postloader.fsx"
 #load "../loaders/pageloader.fsx"
 #load "../loaders/globalloader.fsx"
@@ -165,9 +165,6 @@ let postLayout (useSummary: bool) (post: Postloader.Post) =
     ]
 
 let recipeLayout (recipe: Recipeloader.Recipe) =
-    let ingredientUnitView u =
-        !!(Recipeloader.IngredientUnit.format u)
-
     div [ Class "card article" ] [
         div [ Class "card-content" ] [
             div [ Class "media-content has-text-centered" ] [
@@ -208,7 +205,7 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                                     | Some v -> !! $" ({v})"
                                     !!":"
                                     !! $"{ingredient.Amount}"
-                                    ingredientUnitView ingredient.Unit
+                                // ingredientUnitView ingredient.Unit
                                 ]
                             ]
                     ]
