@@ -1,4 +1,5 @@
 #r "nuget: Kadlet"
+#r "nuget: FsToolkit.ErrorHandling"
 
 #load "prelude.fsx"
 
@@ -197,3 +198,43 @@ module KdlParser =
 
 
         let kdlParser = KdlNodesParserBuilder()
+
+open FsToolkit.ErrorHandling
+
+type KdlValueParser<'a> = KdlValue -> Validation<'a, string>
+
+module KdlValueParser =
+    let runParser
+        (parser: KdlValueParser<'a>)
+        (value: KdlValue)
+        : Result<'a, string list> =
+
+        parser value
+
+    let map (f: 'a -> 'b) (parser: KdlValueParser<'a>) : KdlValueParser<'b> =
+        fun value -> runParser parser value |> Validation.map f
+
+    let apply
+        (ma: KdlValueParser<'a>)
+        (mf: KdlValueParser<'a -> 'b>)
+        : KdlValueParser<'b> =
+        fun value ->
+            let a = runParser ma value
+            let f = runParser mf value
+
+            Validation.apply f a
+
+    module Primitives =
+        let str: KdlValueParser<string> =
+            function
+            | :? KdlString as p -> Validation.ok p.Value
+            | other ->
+                Validation.error
+                    $"expected KDL string value, instead got: '%A{other}'"
+
+        let integer: KdlValueParser<int> =
+            function
+            | :? KdlInt32 as p -> Validation.ok p.Value
+            | other ->
+                Validation.error
+                    $"expected KDL int32 value, instead got: '%A{other}'"

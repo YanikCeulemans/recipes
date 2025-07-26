@@ -3,15 +3,23 @@ recipe {
   tags "vegan" "mexican" "spicey" "savory" "tortillas"
 
   key-info {
-    dish "dinner"
+    i "Dish" "Dinner"
     // Better syntax: i "Dish" "Dinner" // so we can use a string a display value for the "key" of the key info
-    total-time "45 mins"
+    i "Total time" "45 mins"
   }
 
   ingredients serving=2 {
     butter 1 "tbsp"
     rice 75 "g" "basmati"
     onion 1
+    garlic 1 "clove"
+    // "bell pepper" 2
+    // kidney beans: 1 can
+    // corn: 1 small can
+    // tomato paste: 140g can
+    // tortillas medium: 6
+    // vegetable stock: 150ml
+    // pepper (or harisa if you like spicey): to taste
   }
 
   instructions \

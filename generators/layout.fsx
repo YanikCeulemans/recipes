@@ -206,9 +206,8 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                                     match ingredient.Variant with
                                     | None -> ()
                                     | Some v -> !! $" ({v})"
-                                    !!": "
+                                    !!":"
                                     !! $"{ingredient.Amount}"
-                                    // !!(ingredientUnitView ingredient.Unit)
                                     ingredientUnitView ingredient.Unit
                                 ]
                             ]
