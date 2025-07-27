@@ -205,7 +205,8 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                                     | Some v -> !! $" ({v})"
                                     !!":"
                                     !! $"{ingredient.Amount}"
-                                // ingredientUnitView ingredient.Unit
+                                    !!(Recipeloader.IngredientUnit.format
+                                        ingredient.Unit)
                                 ]
                             ]
                     ]
