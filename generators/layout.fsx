@@ -1,6 +1,6 @@
 #r "../_lib/Fornax.Core.dll"
-#load "../loaders/recipeloader.fsx"
 #if !FORNAX
+#load "../loaders/recipeloader.fsx"
 #load "../loaders/postloader.fsx"
 #load "../loaders/pageloader.fsx"
 #load "../loaders/globalloader.fsx"
