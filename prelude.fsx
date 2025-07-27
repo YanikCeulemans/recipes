@@ -9,6 +9,13 @@ module Tuple =
 
 module String =
     let braced (str: string) = $"(%s{str})"
+    let appendWith (str2: string) (str1: string) = str1 + str2
+
+    let captilize (str: string) =
+        match str with
+        | null
+        | "" -> str
+        | _ -> System.Char.ToUpper str[0] |> string |> appendWith str[1..]
 
 module Result =
     let ap

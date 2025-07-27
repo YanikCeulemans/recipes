@@ -168,7 +168,7 @@ let postLayout (useSummary: bool) (post: Postloader.Post) =
 let private ingredientView (ingredient: Recipeloader.Ingredient) =
     let name =
         [
-            ingredient.Name
+            ingredient.Name |> Prelude.String.captilize
             match ingredient.Variant |> Option.map Prelude.String.braced with
             | None -> ()
             | Some x -> x
@@ -209,20 +209,28 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                     span [] [ !!"serving: " ]
                     span [] [ !! $"{recipe.Ingredients.Serving}" ]
                 ]
-                match recipe.Ingredients.Ingredients |> Array.ofSeq with
-                | [||] -> ()
-                | ingredients ->
-                    ul [] [
-                        for ingredient in ingredients ->
-                            li [] [ ingredientView ingredient ]
-                    ]
-                match recipe.Instructions with
-                | [||] -> ()
-                | instructions ->
-                    ol [] [
-                        for instruction in instructions ->
-                            li [] [ span [] [ !!instruction ] ]
-                    ]
+                div [ Class "columns" ] [
+                    match recipe.Ingredients.Ingredients |> Array.ofSeq with
+                    | [||] -> ()
+                    | ingredients ->
+                        div [ Class "column" ] [
+                            h3 [ Class "is-size-3" ] [ !!"Ingredients" ]
+                            ul [] [
+                                for ingredient in ingredients ->
+                                    li [] [ ingredientView ingredient ]
+                            ]
+                        ]
+                    match recipe.Instructions with
+                    | [||] -> ()
+                    | instructions ->
+                        div [ Class "column" ] [
+                            h3 [ Class "is-size-3" ] [ !!"Instructions" ]
+                            ol [] [
+                                for instruction in instructions ->
+                                    li [] [ span [] [ !!instruction ] ]
+                            ]
+                        ]
+                ]
             ]
         ]
     ]
