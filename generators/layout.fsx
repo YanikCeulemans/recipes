@@ -184,7 +184,7 @@ let private ingredientView (ingredient: Recipeloader.Ingredient) =
 let recipeLayout (recipe: Recipeloader.Recipe) =
     div [ Class "card article" ] [
         div [ Class "card-content" ] [
-            div [ Class "media-content has-text-centered" ] [
+            div [ Class "media-content has-text-centered block" ] [
                 p [ Class "title article-title" ] [
                     a [ Href "#todo" ] [ !!recipe.Name ]
                 ]
@@ -205,21 +205,25 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                     ]
             ]
             div [ Class "content article-body" ] [
-                p [] [
-                    span [] [ !!"serving: " ]
-                    span [] [ !! $"{recipe.Ingredients.Serving}" ]
+                div [ Class "block" ] [
+                    img [ Src "/images/chili-sin-carne.png" ]
                 ]
                 div [ Class "columns" ] [
-                    match recipe.Ingredients.Ingredients |> Array.ofSeq with
-                    | [||] -> ()
-                    | ingredients ->
-                        div [ Class "column" ] [
-                            h3 [ Class "is-size-3" ] [ !!"Ingredients" ]
-                            ul [] [
-                                for ingredient in ingredients ->
-                                    li [] [ ingredientView ingredient ]
+                    div [ Class "column" ] [
+                        h3 [ Class "is-size-3" ] [ !!"Ingredients" ]
+                        div [ Class "level-item has-text-centered" ] [
+                            div [] [
+                                p [ Class "heading" ] [ !!"Serving" ]
+                                p [ Class "title" ] [
+                                    !! $"{recipe.Ingredients.Serving}"
+                                ]
                             ]
                         ]
+                        ul [] [
+                            for ingredient in recipe.Ingredients.Ingredients ->
+                                li [] [ ingredientView ingredient ]
+                        ]
+                    ]
                     match recipe.Instructions with
                     | [||] -> ()
                     | instructions ->
