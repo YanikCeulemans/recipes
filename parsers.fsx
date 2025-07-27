@@ -115,7 +115,7 @@ module KdlParser =
 
                     runParser (parserWith args props) n.Children
 
-        let children
+        let childrenWith
             (parserWith:
                 string
                     -> KdlValue array
@@ -131,6 +131,25 @@ module KdlParser =
                         node.Properties |> Seq.map (|KeyValue|) |> Map.ofSeq
 
                     parserWith node.Identifier args props
+                )
+                |> Array.ofSeq
+                |> sequenceA
+                |> fun parser -> runParser parser doc
+
+        let childrenNamed
+            (name: string)
+            (parser: KdlValue array -> Map<string, KdlValue> -> KdlParser<'a>)
+            : KdlParser<'a array> =
+            fun doc ->
+                doc.Nodes
+                |> Seq.filter (fun node -> node.Identifier = name)
+                |> Seq.map (fun node ->
+                    let args = Array.ofSeq node.Arguments
+
+                    let props =
+                        node.Properties |> Seq.map (|KeyValue|) |> Map.ofSeq
+
+                    parser args props
                 )
                 |> Array.ofSeq
                 |> sequenceA

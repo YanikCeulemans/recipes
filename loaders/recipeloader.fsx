@@ -99,7 +99,7 @@ module Ingredients =
                 |> KdlParser.ofValidation
 
             and! ingredients =
-                KdlParser.Combinators.children Ingredient.ingredientParser
+                KdlParser.Combinators.childrenWith Ingredient.ingredientParser
 
             return {
                 Serving = serving
@@ -142,22 +142,12 @@ module Recipe =
             |> KdlParser.ofValidation
 
 
-        KdlParser.Combinators.children keyInfoChildrenParser
+        KdlParser.Combinators.childrenWith keyInfoChildrenParser
         |> KdlParser.map Map.ofSeq
 
 
-    let private instructionsParser
-        (args: KdlValue array)
-        _props
-        : KdlParser<string array> =
-        args
-        |> Seq.map (
-            KdlValueParser.runParser KdlValueParser.Primitives.str
-            >> Result.mapError (String.concat "; ")
-        )
-        |> Seq.sequenceResultA
-        |> Result.mapError List.ofSeq
-        |> Result.map Array.ofSeq
+    let private instructionStepParser args _props =
+        KdlValueParser.Collections.nth 0 KdlValueParser.Primitives.str args
         |> KdlParser.ofValidation
 
     let parser: KdlParser<Recipe> =
@@ -208,7 +198,11 @@ module Recipe =
                     Ingredients.ingredientsParser
 
             and! instructions =
-                KdlParser.Combinators.nodeWith "instructions" instructionsParser
+                KdlParser.Combinators.node
+                    "instructions"
+                    (KdlParser.Combinators.childrenNamed
+                        "step"
+                        instructionStepParser)
 
             return {
                 Name = name

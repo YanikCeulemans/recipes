@@ -21,7 +21,7 @@ recipe {
     // i "pepper" (or harisa if you like spicey): to taste
   }
 
-  instructions \
+  /-instructions \
     "Dice the onion" \
     "Dice the bell peppers, dice the garlic and crush it with the flat side of your knife" \
     "Heat up the butter in a large skillet" \
@@ -39,4 +39,24 @@ recipe {
     "Drain and add the corn to the chili" \
     "Heat up 2 tortillas in the microwave at 800W for around 15 sec" \
     "Serve a small portion of chili in the center of the tortilla, and wrap it tight"
+
+  instructions {
+    step "Dice the onion"
+    step "Dice the bell peppers, dice the garlic and crush it with the flat side of your knife"
+    step "Heat up the butter in a large skillet"
+    step "Fry the diced onion until translucent"
+    step "Add the diced bell peppers and crushed garlic to the onions and stir for a couple of minutes"
+    step "Prepare the vegetable stock in a small pot"
+    step "Drain the kidney beans and rinse them under the tap"
+    step "Add the tomato paste and pepper to the chili and stir for 2 minutes"
+    step "Boil at least 150ml water and cook the rice for 11 minutes"
+    step "Add the drained kidney beans to the chili and stir"
+    step "Add the vegetable stock to the chili"
+    step "Let the chili simmer until well cooked, this takes about 15 minutes"
+    step "Drain the rice"
+    step "Once the chili is well cooked, add the rice"
+    step "Drain and add the corn to the chili"
+    step "Heat up 2 tortillas in the microwave at 800W for around 15 sec"
+    step "Serve a small portion of chili in the center of the tortilla, and wrap it tight"
+  }
 }
