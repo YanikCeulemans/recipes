@@ -3,42 +3,23 @@ recipe {
   tags "vegan" "mexican" "spicey" "savory" "tortillas"
 
   key-info {
-    i "Dish" "Dinner"
-    i "Total time" "45 mins"
+    info "Dish" "Dinner"
+    info "Total time" "45 mins"
   }
 
   ingredients serving=2 {
-    i "butter" 1 "tbsp"
-    i "rice" 75 "g" "basmati"
-    i "onion" 1
-    i "garlic" 1 "clove"
-    i "bell pepper" 2
-    i "kidney beans" 240 "g"
-    i "corn" 140 "g"
-    i "tomato paste" 140 "g"
-    i "tortillas" 8 "p" "whole wheat, medium"
-    i "vegetable broth" 150 "ml"
+    ingredient "butter" 1 "tbsp"
+    ingredient "rice" 75 "g" "basmati"
+    ingredient "onion" 1
+    ingredient "garlic" 1 "clove"
+    ingredient "bell pepper" 2
+    ingredient "kidney beans" 240 "g"
+    ingredient "corn" 140 "g"
+    ingredient "tomato paste" 140 "g"
+    ingredient "tortillas" 8 "p" "whole wheat, medium"
+    ingredient "vegetable broth" 150 "ml"
     // i "pepper" (or harisa if you like spicey): to taste
   }
-
-  /-instructions \
-    "Dice the onion" \
-    "Dice the bell peppers, dice the garlic and crush it with the flat side of your knife" \
-    "Heat up the butter in a large skillet" \
-    "Fry the diced onion until translucent" \
-    "Add the diced bell peppers and crushed garlic to the onions and stir for a couple of minutes" \
-    "Prepare the vegetable stock in a small pot" \
-    "Drain the kidney beans and rinse them under the tap" \
-    "Add the tomato paste and pepper to the chili and stir for 2 minutes" \
-    "Boil at least 150ml water and cook the rice for 11 minutes" \
-    "Add the drained kidney beans to the chili and stir" \
-    "Add the vegetable stock to the chili" \
-    "Let the chili simmer until well cooked, this takes about 15 minutes" \
-    "Drain the rice" \
-    "Once the chili is well cooked, add the rice" \
-    "Drain and add the corn to the chili" \
-    "Heat up 2 tortillas in the microwave at 800W for around 15 sec" \
-    "Serve a small portion of chili in the center of the tortilla, and wrap it tight"
 
   instructions {
     step "Dice the onion"

@@ -32,7 +32,6 @@ module Ingredient =
     open FsToolkit.ErrorHandling
 
     let ingredientParser
-        (_name: string)
         (args: KdlValue array)
         (_props: Map<string, KdlValue>)
         : KdlParser<Ingredient> =
@@ -99,7 +98,9 @@ module Ingredients =
                 |> KdlParser.ofValidation
 
             and! ingredients =
-                KdlParser.Combinators.childrenWith Ingredient.ingredientParser
+                KdlParser.Combinators.childrenNamed
+                    "ingredient"
+                    Ingredient.ingredientParser
 
             return {
                 Serving = serving
@@ -121,9 +122,8 @@ module Recipe =
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
-    // TODO: Verify that the nodes here are named "i"?
     let private keyInfoParser: KdlParser<Map<string, string>> =
-        let keyInfoChildrenParser _ args _ =
+        let keyInfoChildrenParser args _ =
             validation {
                 let! name =
                     KdlValueParser.Collections.nth
@@ -142,7 +142,7 @@ module Recipe =
             |> KdlParser.ofValidation
 
 
-        KdlParser.Combinators.childrenWith keyInfoChildrenParser
+        KdlParser.Combinators.childrenNamed "info" keyInfoChildrenParser
         |> KdlParser.map Map.ofSeq
 
 
