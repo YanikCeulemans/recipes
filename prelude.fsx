@@ -7,6 +7,9 @@ module List =
 module Tuple =
     let create a b = a, b
 
+module String =
+    let braced (str: string) = $"(%s{str})"
+
 module Result =
     let ap
         (ma: Result<'a, string>)

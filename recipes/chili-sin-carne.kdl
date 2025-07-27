@@ -8,17 +8,39 @@ recipe {
   }
 
   ingredients serving=2 {
-    ingredient "butter" 1 "tbsp"
-    ingredient "rice" 75 "g" "basmati"
-    ingredient "onion" 1
-    ingredient "garlic" 1 "clove"
-    ingredient "bell pepper" 2
-    ingredient "kidney beans" 240 "g"
-    ingredient "corn" 140 "g"
-    ingredient "tomato paste" 140 "g"
-    ingredient "tortillas" 8 "p" "whole wheat, medium"
-    ingredient "vegetable broth" 150 "ml"
-    // i "pepper" (or harisa if you like spicey): to taste
+    ingredient "butter" {
+      amount 1 "tbsp"
+    }
+    ingredient "rice" "basmati" {
+      amount 75 "g"
+    }
+    ingredient "onion" {
+      amount 1
+    }
+    ingredient "garlic" {
+      amount 1 "clove"
+    }
+    ingredient "bell pepper" {
+      amount 2
+    }
+    ingredient "kidney beans" {
+      amount 240 "g"
+    }
+    ingredient "corn" {
+      amount 140 "g"
+    }
+    ingredient "tomato paste" {
+      amount 140 "g"
+    }
+    ingredient "tortillas" "whole wheat, medium" {
+      amount 8
+    }
+    ingredient "vegetable broth" {
+      amount 150 "ml"
+    }
+    ingredient "pepper" "harisa if you like spicey" {
+      to-taste
+    }
   }
 
   instructions {

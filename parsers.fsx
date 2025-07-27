@@ -6,6 +6,12 @@
 open FsToolkit.ErrorHandling
 open Kadlet
 
+module Node =
+    let args (node: KdlNode) : KdlValue array = node.Arguments |> Array.ofSeq
+
+    let props (node: KdlNode) : Map<string, KdlValue> =
+        node.Properties |> Seq.map (|KeyValue|) |> Map.ofSeq
+
 type KdlParser<'a> = KdlDocument -> Validation<'a, string>
 
 module KdlParser =
@@ -16,6 +22,8 @@ module KdlParser =
         parser doc
 
     let rtn (x: 'a) : KdlParser<'a> = fun _ -> Ok x
+
+    let fail (err: string) : KdlParser<'a> = fun _ -> Validation.error err
 
     let map (f: 'a -> 'b) (ax: KdlParser<'a>) : KdlParser<'b> =
         fun doc ->
@@ -91,11 +99,21 @@ module KdlParser =
 
         let node (name: string) (parser: KdlParser<'a>) : KdlParser<'a> =
             fun doc ->
+                // TODO: Nodes can be <null> when node has no children
                 match firstNodeNamed name doc.Nodes with
                 | None ->
                     Validation.error
                         $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
                 | Some n -> runParser parser n.Children
+
+        let singleNodeWith (parser: KdlNode -> KdlParser<'a>) : KdlParser<'a> =
+            fun doc ->
+                // TODO: Nodes can be <null> when node has no children
+                match List.ofSeq doc.Nodes with
+                | [ n ] -> parser n doc
+                | other ->
+                    Validation.error
+                        $"expected only a single node, instead got: %A{other}"
 
         let nodeWith
             (name: string)
@@ -103,6 +121,7 @@ module KdlParser =
                 KdlValue array -> Map<string, KdlValue> -> KdlParser<'a>)
             : KdlParser<'a> =
             fun doc ->
+                // TODO: Nodes can be <null> when node has no children
                 match firstNodeNamed name doc.Nodes with
                 | None ->
                     Validation.error
@@ -123,6 +142,7 @@ module KdlParser =
                     -> KdlParser<'a>)
             : KdlParser<'a array> =
             fun doc ->
+                // TODO: Nodes can be <null> when node has no children
                 doc.Nodes
                 |> Seq.map (fun node ->
                     let args = Array.ofSeq node.Arguments
@@ -138,19 +158,13 @@ module KdlParser =
 
         let childrenNamed
             (name: string)
-            (parser: KdlValue array -> Map<string, KdlValue> -> KdlParser<'a>)
+            (parser: KdlNode -> KdlParser<'a>)
             : KdlParser<'a array> =
             fun doc ->
+                // TODO: Nodes can be <null> when node has no children
                 doc.Nodes
                 |> Seq.filter (fun node -> node.Identifier = name)
-                |> Seq.map (fun node ->
-                    let args = Array.ofSeq node.Arguments
-
-                    let props =
-                        node.Properties |> Seq.map (|KeyValue|) |> Map.ofSeq
-
-                    parser args props
-                )
+                |> Seq.map parser
                 |> Array.ofSeq
                 |> sequenceA
                 |> fun parser -> runParser parser doc

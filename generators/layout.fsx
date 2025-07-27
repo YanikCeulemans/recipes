@@ -1,5 +1,6 @@
 #r "../_lib/Fornax.Core.dll"
 #if !FORNAX
+#load "../prelude.fsx"
 #load "../loaders/recipeloader.fsx"
 #load "../loaders/postloader.fsx"
 #load "../loaders/pageloader.fsx"
@@ -164,6 +165,22 @@ let postLayout (useSummary: bool) (post: Postloader.Post) =
         ]
     ]
 
+let private ingredientView (ingredient: Recipeloader.Ingredient) =
+    let name =
+        [
+            ingredient.Name
+            match ingredient.Variant |> Option.map Prelude.String.braced with
+            | None -> ()
+            | Some x -> x
+        ]
+        |> String.concat " "
+
+    let text =
+        [ name; Recipeloader.IngredientAmount.format ingredient.Amount ]
+        |> String.concat ": "
+
+    span [] [ !!text ]
+
 let recipeLayout (recipe: Recipeloader.Recipe) =
     div [ Class "card article" ] [
         div [ Class "card-content" ] [
@@ -197,18 +214,7 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                 | ingredients ->
                     ul [] [
                         for ingredient in ingredients ->
-                            li [] [
-                                span [] [
-                                    !!ingredient.Name
-                                    match ingredient.Variant with
-                                    | None -> ()
-                                    | Some v -> !! $" ({v})"
-                                    !!":"
-                                    !! $"{ingredient.Amount}"
-                                    !!(Recipeloader.IngredientUnit.format
-                                        ingredient.Unit)
-                                ]
-                            ]
+                            li [] [ ingredientView ingredient ]
                     ]
                 match recipe.Instructions with
                 | [||] -> ()

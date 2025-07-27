@@ -8,69 +8,86 @@
 open System.IO
 open Kadlet
 
-type IngredientUnit =
-    | Pieces
-    | OtherIngredientUnit of string
+type IngredientAmount =
+    | ToTaste
+    | Pieces of int
+    | OtherIngredientUnit of int * string
 
-module IngredientUnit =
+module IngredientAmount =
     let format =
         function
-        | Pieces -> "pieces"
-        | OtherIngredientUnit o -> o
+        | ToTaste -> "to taste"
+        | Pieces n -> $"%d{n}"
+        | OtherIngredientUnit(n, u) -> $"%d{n} %s{u}"
 
 type Ingredient = {
     Name: string
-    Amount: int
-    /// The default unit is pieces
-    Unit: IngredientUnit
-    /// The default is no variant
+    Amount: IngredientAmount
     Variant: string option
 }
 
 module Ingredient =
     open Parsers
+    open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
-    let ingredientParser
-        (args: KdlValue array)
-        (_props: Map<string, KdlValue>)
-        : KdlParser<Ingredient> =
-        let ingredientUnitParser: KdlValueParser<IngredientUnit> =
-            KdlValueParser.Primitives.str
-            |> KdlValueParser.map OtherIngredientUnit
+    let private amountParser (node: KdlNode) : KdlParser<IngredientAmount> =
+        match node.Identifier with
+        | "amount" ->
+            let args = Node.args node
 
-        validation {
-            let! name =
+            validation {
+                let! amount =
+                    KdlValueParser.Collections.nth
+                        0
+                        KdlValueParser.Primitives.int32
+                        args
+
+                and! ingredientUnit =
+                    KdlValueParser.Collections.nthOpt
+                        1
+                        KdlValueParser.Primitives.str
+                        args
+
+                match ingredientUnit with
+                | None -> return Pieces amount
+                | Some ingredientUnit ->
+                    return OtherIngredientUnit(amount, ingredientUnit)
+            }
+            |> KdlParser.ofValidation
+        | "to-taste" -> KdlParser.rtn ToTaste
+        | _ -> KdlParser.fail $"unexpected amount named: %s{node.Identifier}"
+
+    let ingredientParser (node: KdlNode) : KdlParser<Ingredient> =
+        let args = Node.args node
+
+        kdlParser {
+            let! ingredientAmount =
+                KdlParser.runParser
+                    (KdlParser.Combinators.singleNodeWith amountParser)
+                    node.Children
+                |> KdlParser.ofValidation
+
+            and! name =
                 KdlValueParser.Collections.nth
                     0
                     KdlValueParser.Primitives.str
                     args
-
-            and! amount =
-                KdlValueParser.Collections.nth
-                    1
-                    KdlValueParser.Primitives.int32
-                    args
-
-            and! ingredientUnit =
-                KdlValueParser.Collections.nthOpt 2 ingredientUnitParser args
-                |> Result.map (Option.defaultValue Pieces)
+                |> KdlParser.ofValidation
 
             and! variant =
                 KdlValueParser.Collections.nthOpt
-                    3
+                    1
                     KdlValueParser.Primitives.str
                     args
+                |> KdlParser.ofValidation
 
             return {
                 Name = name
-                Amount = amount
-                Unit = ingredientUnit
+                Amount = ingredientAmount
                 Variant = variant
             }
         }
-        |> KdlParser.ofValidation
-
 
 type Ingredients = {
     Serving: int
@@ -123,7 +140,9 @@ module Recipe =
     open FsToolkit.ErrorHandling
 
     let private keyInfoParser: KdlParser<Map<string, string>> =
-        let keyInfoChildrenParser args _ =
+        let keyInfoChildrenParser (node: KdlNode) =
+            let args = Node.args node
+
             validation {
                 let! name =
                     KdlValueParser.Collections.nth
@@ -146,7 +165,9 @@ module Recipe =
         |> KdlParser.map Map.ofSeq
 
 
-    let private instructionStepParser args _props =
+    let private instructionStepParser (node: KdlNode) =
+        let args = Node.args node
+
         KdlValueParser.Collections.nth 0 KdlValueParser.Primitives.str args
         |> KdlParser.ofValidation
 
