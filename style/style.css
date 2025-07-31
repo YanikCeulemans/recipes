@@ -1,7 +1,7 @@
 html,body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 16px;
-  background: #F0F2F4;
+  /* background: #F0F2F4; */
 }
 .navbar.is-white {
   background: #F0F2F4;

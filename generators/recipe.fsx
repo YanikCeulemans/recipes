@@ -19,20 +19,7 @@ let generate' (ctx: SiteContents) (page: string) =
         |> Option.defaultValue ""
 
     Layout.layout ctx recipe.Name [
-        section [ Class "hero is-info is-medium is-bold" ] [
-            div [ Class "hero-body" ] [
-                div [ Class "container has-text-centered" ] [
-                    h1 [ Class "title" ] [ !!desc ]
-                ]
-            ]
-        ]
-        div [ Class "container" ] [
-            section [ Class "articles" ] [
-                div [ Class "column is-8 is-offset-2" ] [
-                    Layout.recipeLayout recipe
-                ]
-            ]
-        ]
+        div [ Class "container" ] [ section [] [ Layout.recipeLayout recipe ] ]
     ]
 
 let generate (ctx: SiteContents) (projectRoot: string) (page: string) =

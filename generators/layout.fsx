@@ -90,9 +90,6 @@ let layout (ctx: SiteContents) active bodyCnt =
             nav [ Class "navbar" ] [
                 div [ Class "container" ] [
                     div [ Class "navbar-brand" ] [
-                        a [ Class "navbar-item"; Href "/" ] [
-                            img [ Src "/images/bulma.png"; Alt "Logo" ]
-                        ]
                         span [
                             Class "navbar-burger burger"
                             HtmlProperties.Custom("data-target", "navbarMenu")
@@ -182,59 +179,65 @@ let private ingredientView (ingredient: Recipeloader.Ingredient) =
     span [] [ !!text ]
 
 let recipeLayout (recipe: Recipeloader.Recipe) =
-    div [ Class "card" ] [
-        div [ Class "card-content" ] [
-            div [ Class "media-content has-text-centered block" ] [
-                p [ Class "title" ] [ a [ Href "#todo" ] [ !!recipe.Name ] ]
-                match recipe.KeyInfo with
-                | None -> ()
-                | Some keyInfo ->
-                    nav [ Class "level" ] [
-                        for KeyValue(key, value) in keyInfo ->
-                            div [ Class "level-item has-text-centered" ] [
-                                div [] [
-                                    p [ Class "heading" ] [ !!key ]
-                                    p [ Class "title" ] [ !!value ]
-                                ]
+    div [] [
+        div [ Class "media-content has-text-centered block" ] [
+            p [ Class "title" ] [ a [ Href "#todo" ] [ !!recipe.Name ] ]
+            match recipe.KeyInfo with
+            | None -> ()
+            | Some keyInfo ->
+                nav [ Class "level" ] [
+                    for KeyValue(key, value) in keyInfo ->
+                        div [ Class "level-item has-text-centered" ] [
+                            div [] [
+                                p [ Class "heading" ] [ !!key ]
+                                p [ Class "title" ] [ !!value ]
                             ]
-                    ]
+                        ]
+                ]
+        ]
+        div [ Class "content article-body" ] [
+            div [ Class "block" ] [
+                figure [ Class "image" ] [
+                    img [ Src "/images/chili-sin-carne.png" ]
+                ]
             ]
-            div [ Class "content article-body" ] [
-                div [ Class "block" ] [
-                    figure [ Class "image" ] [
-                        img [ Src "/images/chili-sin-carne.png" ]
+            div [ Class "columns" ] [
+                div [ Class "column" ] [
+                    nav [ Class "panel" ] [
+                        yield
+                            p [ Class "panel-heading m-0" ] [ !!"Ingredients" ]
+                        yield
+                            div [ Class "panel-block" ] [
+                                div [ Class "is-size-4 container level" ] [
+                                    button [ Class "button level-left" ] [
+                                        !!"-"
+                                    ]
+                                    span [ Class "level-item" ] [
+                                        !! $"Serving: {recipe.Ingredients.Serving}"
+                                    ]
+                                    button [ Class "button level-right" ] [
+                                        !!"+"
+                                    ]
+                                ]
+                            ]
+                        for ingredient in recipe.Ingredients.Ingredients ->
+                            span [ Class "panel-block" ] [
+                                ingredientView ingredient
+                            ]
                     ]
                 ]
-                div [ Class "columns" ] [
+                match recipe.Instructions with
+                | [||] -> ()
+                | instructions ->
                     div [ Class "column" ] [
-                        h3 [ Class "is-size-3" ] [ !!"Ingredients" ]
-                        div [ Class "box is-size-4 level" ] [
-                            button [ Class "button level-left" ] [ !!"-" ]
-                            span [ Class "level-item" ] [
-                                !! $"Serving: {recipe.Ingredients.Serving}"
-                            ]
-                            button [ Class "button level-right" ] [ !!"+" ]
-                        ]
-                        ul [] [
-                            for ingredient in recipe.Ingredients.Ingredients ->
+                        h3 [ Class "is-size-3" ] [ !!"Instructions" ]
+                        ol [] [
+                            for instruction in instructions ->
                                 li [ Class "my-5" ] [
-                                    ingredientView ingredient
+                                    span [] [ !!instruction ]
                                 ]
                         ]
                     ]
-                    match recipe.Instructions with
-                    | [||] -> ()
-                    | instructions ->
-                        div [ Class "column" ] [
-                            h3 [ Class "is-size-3" ] [ !!"Instructions" ]
-                            ol [] [
-                                for instruction in instructions ->
-                                    li [ Class "my-5" ] [
-                                        span [] [ !!instruction ]
-                                    ]
-                            ]
-                        ]
-                ]
             ]
         ]
     ]
