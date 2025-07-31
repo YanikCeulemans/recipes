@@ -44,8 +44,7 @@ recipe {
   }
 
   instructions {
-    step "Dice the onion"
-    step "Dice the bell peppers, dice the garlic and crush it with the flat side of your knife"
+    step "Dice the onion, dice the bell peppers, dice the garlic and crush it with the flat side of your knife"
     step "Heat up the butter in a large skillet"
     step "Fry the diced onion until translucent"
     step "Add the diced bell peppers and crushed garlic to the onions and stir for a couple of minutes"

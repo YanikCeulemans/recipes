@@ -182,15 +182,10 @@ let private ingredientView (ingredient: Recipeloader.Ingredient) =
     span [] [ !!text ]
 
 let recipeLayout (recipe: Recipeloader.Recipe) =
-    div [ Class "card article" ] [
+    div [ Class "card" ] [
         div [ Class "card-content" ] [
             div [ Class "media-content has-text-centered block" ] [
-                p [ Class "title article-title" ] [
-                    a [ Href "#todo" ] [ !!recipe.Name ]
-                ]
-                p [ Class "subtitle is-6 article-subtitle" ] [
-                    a [ Href "#" ] [ !!"@yanikc" ]
-                ]
+                p [ Class "title" ] [ a [ Href "#todo" ] [ !!recipe.Name ] ]
                 match recipe.KeyInfo with
                 | None -> ()
                 | Some keyInfo ->
@@ -206,22 +201,25 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
             ]
             div [ Class "content article-body" ] [
                 div [ Class "block" ] [
-                    img [ Src "/images/chili-sin-carne.png" ]
+                    figure [ Class "image" ] [
+                        img [ Src "/images/chili-sin-carne.png" ]
+                    ]
                 ]
                 div [ Class "columns" ] [
                     div [ Class "column" ] [
                         h3 [ Class "is-size-3" ] [ !!"Ingredients" ]
-                        div [ Class "level-item has-text-centered" ] [
-                            div [] [
-                                p [ Class "heading" ] [ !!"Serving" ]
-                                p [ Class "title" ] [
-                                    !! $"{recipe.Ingredients.Serving}"
-                                ]
+                        div [ Class "box is-size-4 level" ] [
+                            button [ Class "button level-left" ] [ !!"-" ]
+                            span [ Class "level-item" ] [
+                                !! $"Serving: {recipe.Ingredients.Serving}"
                             ]
+                            button [ Class "button level-right" ] [ !!"+" ]
                         ]
                         ul [] [
                             for ingredient in recipe.Ingredients.Ingredients ->
-                                li [] [ ingredientView ingredient ]
+                                li [ Class "my-5" ] [
+                                    ingredientView ingredient
+                                ]
                         ]
                     ]
                     match recipe.Instructions with
@@ -231,7 +229,9 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                             h3 [ Class "is-size-3" ] [ !!"Instructions" ]
                             ol [] [
                                 for instruction in instructions ->
-                                    li [] [ span [] [ !!instruction ] ]
+                                    li [ Class "my-5" ] [
+                                        span [] [ !!instruction ]
+                                    ]
                             ]
                         ]
                 ]
