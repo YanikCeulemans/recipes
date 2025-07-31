@@ -84,6 +84,11 @@ let layout (ctx: SiteContents) active bodyCnt =
                     "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
             ]
             link [ Rel "stylesheet"; Type "text/css"; Href "/style/style.css" ]
+            script [
+                Defer true
+                Src
+                    "https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+            ] []
 
         ]
         body [] [
@@ -162,7 +167,12 @@ let postLayout (useSummary: bool) (post: Postloader.Post) =
         ]
     ]
 
-let private ingredientView (ingredient: Recipeloader.Ingredient) =
+let XText (v: string) = HtmlProperties.Custom("x-text", v)
+
+let private ingredientView
+    (servingAmount: int)
+    (ingredient: Recipeloader.Ingredient)
+    =
     let name =
         [
             ingredient.Name |> Prelude.String.captilize
@@ -172,11 +182,27 @@ let private ingredientView (ingredient: Recipeloader.Ingredient) =
         ]
         |> String.concat " "
 
-    let text =
-        [ name; Recipeloader.IngredientAmount.format ingredient.Amount ]
-        |> String.concat ": "
+    let x =
+        match ingredient.Amount with
+        | Recipeloader.IngredientAmount.ToTaste -> span [] [ !!"to taste" ]
+        | Recipeloader.IngredientAmount.Pieces n ->
+            // let txt = $"(serving / %d{servingAmount}) * %d{n}"
+            // span [ XText "" ] []
+            // Accessing n causes an error?!
+            span [ XText "" ] [ !! $"" ]
+        | Recipeloader.IngredientAmount.OtherIngredientUnit(n, u) ->
+            span [] [ !!"3" ]
 
-    span [] [ !!text ]
+    span [] [
+        span [] [ !! $"{name}: " ]
+        x
+    // | Recipeloader.IngredientAmount.ToTaste -> span [] [ !!"to taste" ]
+    // | Recipeloader.IngredientAmount.Pieces n ->
+    //     span [ XText $"(serving / %d{serving}) * %d{n}" ] []
+    // | Recipeloader.IngredientAmount.OtherIngredientUnit(n, u) ->
+    //     span [ XText $"(serving / %d{serving}) * %d{n}" ] []
+    // span [] [ !!u ]
+    ]
 
 let recipeLayout (recipe: Recipeloader.Recipe) =
     div [] [
@@ -203,26 +229,48 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
             ]
             div [ Class "columns" ] [
                 div [ Class "column" ] [
-                    nav [ Class "panel" ] [
+                    nav [
+                        Class "panel"
+                        HtmlProperties.Custom(
+                            "x-data",
+                            "{" + $"serving: {recipe.Ingredients.Serving}" + "}"
+                        )
+                    ] [
                         yield
                             p [ Class "panel-heading m-0" ] [ !!"Ingredients" ]
                         yield
                             div [ Class "panel-block" ] [
                                 div [ Class "is-size-4 container level" ] [
-                                    button [ Class "button level-left" ] [
-                                        !!"-"
-                                    ]
+                                    button [
+                                        Class "button level-left"
+                                        HtmlProperties.Custom(
+                                            "x-on:click",
+                                            "serving = Math.max(1, serving - 1)"
+                                        )
+                                    ] [ !!"-" ]
                                     span [ Class "level-item" ] [
-                                        !! $"Serving: {recipe.Ingredients.Serving}"
+                                        !! $"Serving: "
+                                        span [
+                                            HtmlProperties.Custom(
+                                                "x-text",
+                                                "serving"
+                                            )
+                                        ] []
                                     ]
-                                    button [ Class "button level-right" ] [
-                                        !!"+"
-                                    ]
+                                    button [
+                                        Class "button level-right"
+                                        HtmlProperties.Custom(
+                                            "x-on:click",
+                                            "serving++"
+                                        )
+                                    ] [ !!"+" ]
                                 ]
                             ]
                         for ingredient in recipe.Ingredients.Ingredients ->
                             span [ Class "panel-block" ] [
-                                ingredientView ingredient
+                                ingredientView
+                                    recipe.Ingredients.Serving
+                                    ingredient
                             ]
                     ]
                 ]
