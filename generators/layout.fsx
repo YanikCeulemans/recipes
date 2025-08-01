@@ -168,6 +168,8 @@ let postLayout (useSummary: bool) (post: Postloader.Post) =
     ]
 
 let XText (v: string) = HtmlProperties.Custom("x-text", v)
+let XData (v: string) = HtmlProperties.Custom("x-data", v)
+let XOnClick (v: string) = HtmlProperties.Custom("x-on:click", v)
 
 let private ingredientView
     (servingAmount: int)
@@ -182,26 +184,19 @@ let private ingredientView
         ]
         |> String.concat " "
 
-    let x =
-        match ingredient.Amount with
-        | Recipeloader.IngredientAmount.ToTaste -> span [] [ !!"to taste" ]
-        | Recipeloader.IngredientAmount.Pieces n ->
-            // let txt = $"(serving / %d{servingAmount}) * %d{n}"
-            // span [ XText "" ] []
-            // Accessing n causes an error?!
-            span [ XText "" ] [ !! $"" ]
-        | Recipeloader.IngredientAmount.OtherIngredientUnit(n, u) ->
-            span [] [ !!"3" ]
+    let xtext, unitText =
+        Recipeloader.IngredientAmount.formatWithScaling
+            $"serving / %d{servingAmount}"
+            ingredient.Amount
 
     span [] [
         span [] [ !! $"{name}: " ]
-        x
-    // | Recipeloader.IngredientAmount.ToTaste -> span [] [ !!"to taste" ]
-    // | Recipeloader.IngredientAmount.Pieces n ->
-    //     span [ XText $"(serving / %d{serving}) * %d{n}" ] []
-    // | Recipeloader.IngredientAmount.OtherIngredientUnit(n, u) ->
-    //     span [ XText $"(serving / %d{serving}) * %d{n}" ] []
-    // span [] [ !!u ]
+        match xtext with
+        | None -> ()
+        | Some(xtext, amount) -> span [ XText xtext ] [ !! $"%d{amount}" ]
+
+        span [] [ !!unitText ]
+
     ]
 
 let recipeLayout (recipe: Recipeloader.Recipe) =
@@ -231,8 +226,7 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                 div [ Class "column" ] [
                     nav [
                         Class "panel"
-                        HtmlProperties.Custom(
-                            "x-data",
+                        XData(
                             "{" + $"serving: {recipe.Ingredients.Serving}" + "}"
                         )
                     ] [
@@ -243,26 +237,23 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                                 div [ Class "is-size-4 container level" ] [
                                     button [
                                         Class "button level-left"
-                                        HtmlProperties.Custom(
-                                            "x-on:click",
+                                        XOnClick
                                             "serving = Math.max(1, serving - 1)"
-                                        )
                                     ] [ !!"-" ]
                                     span [ Class "level-item" ] [
-                                        !! $"Serving: "
-                                        span [
-                                            HtmlProperties.Custom(
-                                                "x-text",
-                                                "serving"
-                                            )
-                                        ] []
+                                        span [ Class "columns is-1" ] [
+                                            span [ Class "column" ] [
+                                                !! $"Serving: "
+                                            ]
+                                            span [
+                                                Class "column"
+                                                XText "serving"
+                                            ] []
+                                        ]
                                     ]
                                     button [
                                         Class "button level-right"
-                                        HtmlProperties.Custom(
-                                            "x-on:click",
-                                            "serving++"
-                                        )
+                                        XOnClick "serving++"
                                     ] [ !!"+" ]
                                 ]
                             ]

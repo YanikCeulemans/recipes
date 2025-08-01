@@ -20,6 +20,12 @@ module IngredientAmount =
         | Pieces n -> $"%d{n}"
         | OtherIngredientUnit(n, u) -> $"%d{n} %s{u}"
 
+    let formatWithScaling (scaling: string) amount =
+        match amount with
+        | ToTaste -> None, "to taste"
+        | Pieces n -> Some($"(%s{scaling}) * %d{n}", n), ""
+        | OtherIngredientUnit(n, u) -> Some($"(%s{scaling}) * %d{n}", n), u
+
 type Ingredient = {
     Name: string
     Amount: IngredientAmount
