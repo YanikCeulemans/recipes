@@ -218,9 +218,7 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
         ]
         div [ Class "content article-body" ] [
             div [ Class "block" ] [
-                figure [ Class "image" ] [
-                    img [ Src "/images/chili-sin-carne.png" ]
-                ]
+                figure [ Class "image" ] [ img [ Src recipe.Image ] ]
             ]
             div [ Class "columns" ] [
                 div [ Class "column" ] [

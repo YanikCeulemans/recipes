@@ -7,6 +7,8 @@ recipe {
     info "Total time" "45 mins"
   }
 
+  image "/images/chili-sin-carne.png"
+
   ingredients serving=2 {
     ingredient "butter" {
       amount 1 "tbsp"

@@ -136,6 +136,7 @@ type Recipe = {
     Name: string
     Tags: string array option
     KeyInfo: Map<string, string> option
+    Image: string
     Ingredients: Ingredients
     Instructions: string array
 }
@@ -219,6 +220,11 @@ module Recipe =
                     KdlParser.Combinators.node "key-info" keyInfoParser
                 )
 
+            and! image =
+                KdlParser.Combinators.nodeWith
+                    "image"
+                    (firstArg KdlValueParser.Primitives.str)
+
             and! ingredients =
                 KdlParser.Combinators.nodeWith
                     "ingredients"
@@ -235,6 +241,7 @@ module Recipe =
                 Name = name
                 Tags = tags
                 KeyInfo = keyInfo
+                Image = image
                 Ingredients = ingredients
                 Instructions = instructions
             }
