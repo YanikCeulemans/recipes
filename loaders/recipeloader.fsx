@@ -247,18 +247,20 @@ module Recipe =
             }
         }
 
+type RecipeEnvelope = { FileName: string; Recipe: Recipe }
+
 let contentDir = "recipes"
 
 let reader = KdlReader()
 
-let loadFile (filePath: string) : Recipe =
+let loadFile (filePath: string) : RecipeEnvelope =
     use fs = File.OpenRead filePath
     let doc = reader.Parse fs
 
     let p = Parsers.KdlParser.Combinators.node "recipe" Recipe.parser
 
     match Parsers.KdlParser.runParser p doc with
-    | Ok r -> r
+    | Ok r -> { FileName = filePath; Recipe = r }
     | Error reasons ->
         let reason = String.concat "; " reasons
         failwith $"could not parse: %s{reason}"
