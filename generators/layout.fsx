@@ -199,13 +199,33 @@ let private ingredientView
 
     ]
 
+let keyInfoView (recipe: Recipeloader.Recipe) = [
+    match recipe.KeyInfo with
+    | None -> ()
+    | Some keyInfo ->
+        nav [ Class "level" ] [
+            for KeyValue(key, value) in keyInfo ->
+                div [ Class "level-item has-text-centered" ] [
+                    div [] [
+                        p [ Class "heading" ] [ !!key ]
+                        p [ Class "title" ] [ !!value ]
+                    ]
+                ]
+        ]
+]
+
 let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
 
-    article [ Class "column card media" ] [
-        figure [ Class "image" ] [ img [ Src recipe.Image ] ]
-        h4 [ Class "is-size-4" ] [
-            a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
+    article [ Class "card" ] [
+        div [ Class "card-image" ] [
+            figure [ Class "image is-4by3" ] [ img [ Src recipe.Image ] ]
+        ]
+        div [ Class "card-content" ] [
+            h3 [ Class "is-size-3 has-text-centered block" ] [
+                a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
+            ]
+            yield! keyInfoView recipe
         ]
     ]
 
@@ -213,18 +233,7 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
     div [] [
         div [ Class "media-content has-text-centered block" ] [
             p [ Class "title" ] [ a [ Href "#todo" ] [ !!recipe.Name ] ]
-            match recipe.KeyInfo with
-            | None -> ()
-            | Some keyInfo ->
-                nav [ Class "level" ] [
-                    for KeyValue(key, value) in keyInfo ->
-                        div [ Class "level-item has-text-centered" ] [
-                            div [] [
-                                p [ Class "heading" ] [ !!key ]
-                                p [ Class "title" ] [ !!value ]
-                            ]
-                        ]
-                ]
+            yield! keyInfoView recipe
         ]
         div [ Class "content article-body" ] [
             div [ Class "block" ] [

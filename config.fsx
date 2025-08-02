@@ -40,6 +40,10 @@ let staticPredicate (projectRoot: string, page: string) =
         || page.Contains ".sass-cache"
         || page.Contains ".git"
         || page.Contains ".ionide"
+        || page.Contains ".DS_Store"
+        || page.Contains "Session.vim"
+        || page.Contains ".editorconfig"
+        || page.Contains "mise.toml"
 
     fileShouldBeExcluded |> not
 

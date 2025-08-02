@@ -41,10 +41,20 @@ let generate' (ctx: SiteContents) (_: string) =
         let previousPage =
             if i = 0 then "#" else "/" + getFilenameForIndex (i - 1)
 
+        let chunkedRecipes = psts |> List.chunkBySize 3
+
         Layout.layout ctx "Home" [
-            div [ Class "container" ] [ section [] [ div [] psts ] ]
             div [ Class "container" ] [
-                div [ Class "container has-text-centered" ] [
+                section [ Class "my-6" ] [
+                    for recipeChunk in chunkedRecipes do
+                        div [ Class "columns" ] [
+                            for recipe in recipeChunk do
+                                div [ Class "column" ] [ recipe ]
+                        ]
+                ]
+            ]
+            div [ Class "container" ] [
+                div [ Class "has-text-centered my-6" ] [
                     a [ Href previousPage ] [ !!"Previous" ]
                     !!(sprintf "%i of %i" (i + 1) pages)
                     a [ Href nextPage ] [ !!"Next" ]
