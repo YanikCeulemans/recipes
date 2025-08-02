@@ -247,23 +247,42 @@ module Recipe =
             }
         }
 
-type RecipeEnvelope = { FileName: string; Recipe: Recipe }
+type RecipeEnvelope = {
+    FileName: string
+    Link: string
+    Recipe: Recipe
+}
 
 let contentDir = "recipes"
 
 let reader = KdlReader()
 
-let loadFile (filePath: string) : RecipeEnvelope =
+open Prelude
+open Prelude.Prelude
+
+let loadFile (rootDir: string) (filePath: string) : RecipeEnvelope =
     use fs = File.OpenRead filePath
     let doc = reader.Parse fs
 
     let p = Parsers.KdlParser.Combinators.node "recipe" Recipe.parser
 
+    let link =
+        let dir =
+            (Path.GetDirectoryName filePath).Replace(rootDir, "").TrimStart '/'
+
+        let file = File.replaceExt (always ".html") filePath
+
+        Path.Combine(dir, file)
+
     match Parsers.KdlParser.runParser p doc with
-    | Ok r -> { FileName = filePath; Recipe = r }
+    | Ok r -> {
+        FileName = filePath
+        Link = link
+        Recipe = r
+      }
     | Error reasons ->
         let reason = String.concat "; " reasons
-        failwith $"could not parse: %s{reason}"
+        failwith $"could not parse kdl doc for file %s{filePath}: %s{reason}"
 
 let loader (projectRoot: string) (siteContent: SiteContents) =
     let recipesPath = Path.Combine(projectRoot, contentDir)
@@ -272,7 +291,7 @@ let loader (projectRoot: string) (siteContent: SiteContents) =
 
     files
     |> Array.filter (fun s -> s.EndsWith ".kdl")
-    |> Array.map loadFile
+    |> Array.map (loadFile projectRoot)
     |> Array.iter siteContent.Add
 
     siteContent

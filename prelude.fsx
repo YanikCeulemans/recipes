@@ -1,5 +1,6 @@
 module Prelude =
     let flip f a b = f b a
+    let always x _ = x
 
 module List =
     let cons x xs = x :: xs
@@ -46,3 +47,12 @@ module Result =
             let go curr acc = flip List.cons <!> acc <*> curr
 
             Seq.foldBack go xs (Ok []) |> Result.map seq
+
+module File =
+    open System.IO
+
+    let replaceExt (buildExt: string -> string) (fileName: string) =
+        let ext = Path.GetExtension fileName
+        let extlessPath = Path.GetFileNameWithoutExtension fileName
+        let newExt = (buildExt ext).TrimStart '.'
+        $"%s{extlessPath}.%s{newExt}"

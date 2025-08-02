@@ -4,23 +4,24 @@
 open Html
 
 let generate' (ctx: SiteContents) (_: string) =
-    let posts =
-        ctx.TryGetValues<Postloader.Post>() |> Option.defaultValue Seq.empty
+    let recipes =
+        ctx.TryGetValues<Recipeloader.RecipeEnvelope>()
+        |> Option.defaultValue Seq.empty
 
     let siteInfo = ctx.TryGetValue<Globalloader.SiteInfo>()
 
-    let desc, postPageSize =
+    let _, postPageSize =
         siteInfo
         |> Option.map (fun si -> si.description, si.postPageSize)
         |> Option.defaultValue ("", 10)
 
 
     let psts =
-        posts
-        |> Seq.sortByDescending Layout.published
+        recipes
+        |> Seq.sortByDescending (fun r -> r.Recipe.Name)
         |> Seq.toList
         |> List.chunkBySize postPageSize
-        |> List.map (List.map (Layout.postLayout true))
+        |> List.map (List.map Layout.recipeSummary)
 
     let pages = List.length psts
 
@@ -32,7 +33,7 @@ let generate' (ctx: SiteContents) (_: string) =
 
     let layoutForPostSet i psts =
         let nextPage =
-            if i = (pages - 1) then
+            if i = pages - 1 then
                 "#"
             else
                 "/" + getFilenameForIndex (i + 1)
@@ -41,18 +42,7 @@ let generate' (ctx: SiteContents) (_: string) =
             if i = 0 then "#" else "/" + getFilenameForIndex (i - 1)
 
         Layout.layout ctx "Home" [
-            section [ Class "hero is-info is-medium is-bold" ] [
-                div [ Class "hero-body" ] [
-                    div [ Class "container has-text-centered" ] [
-                        h1 [ Class "title" ] [ !!desc ]
-                    ]
-                ]
-            ]
-            div [ Class "container" ] [
-                section [ Class "articles" ] [
-                    div [ Class "column is-8 is-offset-2" ] psts
-                ]
-            ]
+            div [ Class "container" ] [ section [] [ div [] psts ] ]
             div [ Class "container" ] [
                 div [ Class "container has-text-centered" ] [
                     a [ Href previousPage ] [ !!"Previous" ]
@@ -69,4 +59,3 @@ let generate' (ctx: SiteContents) (_: string) =
 
 let generate (ctx: SiteContents) (projectRoot: string) (page: string) =
     generate' ctx page
-

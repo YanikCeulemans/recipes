@@ -199,6 +199,16 @@ let private ingredientView
 
     ]
 
+let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
+    let recipe = recipeEnvelope.Recipe
+
+    article [ Class "column card media" ] [
+        figure [ Class "image" ] [ img [ Src recipe.Image ] ]
+        h4 [ Class "is-size-4" ] [
+            a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
+        ]
+    ]
+
 let recipeLayout (recipe: Recipeloader.Recipe) =
     div [] [
         div [ Class "media-content has-text-centered block" ] [
