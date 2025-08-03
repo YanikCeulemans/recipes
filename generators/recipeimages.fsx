@@ -1,13 +1,12 @@
 #r "nuget: Imageflow.AllPlatforms"
 #r "../_lib/Fornax.Core.dll"
+#load "../prelude.fsx"
 
-open System
 open System.IO
 open Imageflow.Fluent
+open Prelude
 
 let generate (ctx: SiteContents) (projectRoot: string) (page: string) =
-    printfn "recipe images %s" page
-
     let inputPath = Path.Combine(projectRoot, page)
     let imagesBytes = File.ReadAllBytes inputPath
     use imageJob = new ImageJob()
@@ -16,9 +15,26 @@ let generate (ctx: SiteContents) (projectRoot: string) (page: string) =
         imageJob
             .Decode(imagesBytes)
             .Constrain(Constraint(ConstraintMode.Aspect_Crop, 4u, 3u))
-            .EncodeToBytes(LodePngEncoder())
+            .Branch(fun n ->
+                n
+                    // TODO: This downscaling destroys the image quality
+                    // somehow, perhaps there is some option in the image
+                    // library that we're not using here in the resizer
+                    // commands
+                    .ResizerCommands("width=400&height=300")
+                    .EncodeToBytes(WebPLossyEncoder 1f)
+            )
+            .EncodeToBytes(WebPLossyEncoder 1f)
             .Finish()
             .InProcessAndDisposeAsync()
             .Result
 
-    r.First.TryGetBytes().Value |> Array.ofSeq
+    let thumbnailBytes = (r.TryGet 1).TryGetBytes().Value |> Array.ofSeq
+    let croppedBytes = (r.TryGet 2).TryGetBytes().Value |> Array.ofSeq
+
+    [
+        Path.ChangeExtension(page, ".webp")
+        |> Path.modifyFileName (String.prefix "thumbnail-"),
+        thumbnailBytes
+        Path.ChangeExtension(page, ".webp"), croppedBytes
+    ]

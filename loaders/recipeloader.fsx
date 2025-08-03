@@ -258,7 +258,6 @@ let contentDir = "recipes"
 let reader = KdlReader()
 
 open Prelude
-open Prelude.Prelude
 
 let loadFile (rootDir: string) (filePath: string) : RecipeEnvelope =
     use fs = File.OpenRead filePath
@@ -270,7 +269,7 @@ let loadFile (rootDir: string) (filePath: string) : RecipeEnvelope =
         let dir =
             (Path.GetDirectoryName filePath).Replace(rootDir, "").TrimStart '/'
 
-        let file = File.replaceExt (always ".html") filePath
+        let file = Path.modifyExt (always ".html") filePath
 
         Path.Combine(dir, file)
 

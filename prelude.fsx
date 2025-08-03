@@ -1,6 +1,5 @@
-module Prelude =
-    let flip f a b = f b a
-    let always x _ = x
+let flip f a b = f b a
+let always x _ = x
 
 module List =
     let cons x xs = x :: xs
@@ -17,6 +16,8 @@ module String =
         | null
         | "" -> str
         | _ -> System.Char.ToUpper str[0] |> string |> appendWith str[1..]
+
+    let prefix prefix (str: string) = prefix + str
 
 module Result =
     let ap
@@ -40,7 +41,6 @@ module Result =
         let (<*>) mf ma = ap ma mf
 
     module Traversable =
-        open Prelude
         open Operators
 
         let sequenceA (xs: Result<'a, string> seq) : Result<'a seq, string> =
@@ -48,11 +48,23 @@ module Result =
 
             Seq.foldBack go xs (Ok []) |> Result.map seq
 
-module File =
+module Path =
     open System.IO
 
-    let replaceExt (buildExt: string -> string) (fileName: string) =
-        let ext = Path.GetExtension fileName
+    let modifyFileName f (fullPath: string) =
+        let dir, fileName, ext =
+            Path.GetDirectoryName fullPath,
+            Path.GetFileNameWithoutExtension fullPath,
+            Path.GetExtension fullPath
+
+        printfn "modify filename: %s %s %s %s" fullPath dir fileName ext
+
+        Path.Combine(dir, f fileName + ext)
+
+    let modifyExt (buildExt: string -> string) (fileName: string) =
+        let dir = Path.GetDirectoryName fileName
         let extlessPath = Path.GetFileNameWithoutExtension fileName
+        let ext = Path.GetExtension fileName
+
         let newExt = (buildExt ext).TrimStart '.'
-        $"%s{extlessPath}.%s{newExt}"
+        Path.Combine(dir, $"%s{extlessPath}.%s{newExt}")

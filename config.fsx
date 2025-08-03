@@ -85,15 +85,7 @@ let config = {
         {
             Script = "recipeimages.fsx"
             Trigger = OnFilePredicate recipeImagePredicate
-            OutputFile =
-                Custom(fun page ->
-                    let dir, fileName, ext =
-                        Path.GetDirectoryName page,
-                        Path.GetFileNameWithoutExtension page,
-                        Path.GetExtension page
-
-                    Path.Combine(dir, $"transformed-{fileName}{ext}")
-                )
+            OutputFile = MultipleFiles id
         }
         {
             Script = "staticfile.fsx"

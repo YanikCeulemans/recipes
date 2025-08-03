@@ -7,7 +7,7 @@ recipe {
     info "Total time" "45 mins"
   }
 
-  image "/images/transformed-recipe-chili-sin-carne.png"
+  image "/images/recipe-chili-sin-carne.png"
 
   ingredients serving=2 {
     ingredient "butter" {

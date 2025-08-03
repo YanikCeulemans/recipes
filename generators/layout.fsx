@@ -7,6 +7,7 @@
 #load "../loaders/globalloader.fsx"
 #endif
 
+open Prelude
 open Html
 
 let injectWebsocketCode (webpage: string) =
@@ -112,6 +113,8 @@ let render (ctx: SiteContents) cnt =
         ctx.TryGetValue<Postloader.PostConfig>()
         |> Option.map (fun n -> n.disableLiveRefresh)
         |> Option.defaultValue false
+
+    let disableLiveRefresh = true
 
     cnt
     |> HtmlElement.ToString
@@ -219,7 +222,21 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
 
     article [ Class "card" ] [
         div [ Class "card-image" ] [
-            figure [ Class "image is-4by3" ] [ img [ Src recipe.Image ] ]
+            figure [ Class "image is-4by3" ] [
+                img [
+                    Src(
+                        recipe.Image
+                        |> fun s ->
+                            printfn "recipe image in summary %A" s
+                            s
+                        |> Path.modifyExt (always ".webp")
+                        |> Path.modifyFileName (String.prefix "thumbnail-")
+                        |> fun s ->
+                            printfn "in summary src: %A" s
+                            s
+                    )
+                ]
+            ]
         ]
         div [ Class "card-content" ] [
             h3 [ Class "is-size-3 has-text-centered block" ] [
@@ -237,7 +254,9 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
         ]
         div [ Class "content article-body" ] [
             div [ Class "block" ] [
-                figure [ Class "image is-4by3" ] [ img [ Src recipe.Image ] ]
+                figure [ Class "image is-4by3" ] [
+                    img [ Src(recipe.Image |> Path.modifyExt (always ".webp")) ]
+                ]
             ]
             div [ Class "columns" ] [
                 div [ Class "column" ] [
