@@ -226,9 +226,6 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 img [
                     Src(
                         recipe.Image
-                        |> fun s ->
-                            printfn "recipe image in summary %A" s
-                            s
                         |> Path.modifyExt (always ".webp")
                         |> Path.modifyFileName (String.prefix "thumbnail-")
                         |> fun s ->
