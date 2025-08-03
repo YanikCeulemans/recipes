@@ -18,11 +18,6 @@ let recipePredicate (projectRoot: string, page: string) =
     let ext = Path.GetExtension page
 
     ext = ".kdl"
-// if ext = ".kdl" then
-//     let ctn = File.ReadAllText fileName
-//     page.Contains "_public" |> not && ctn.Contains "Layout: post"
-// else
-//     false
 
 let staticPredicate (projectRoot: string, page: string) =
     let ext = Path.GetExtension page
@@ -47,6 +42,23 @@ let staticPredicate (projectRoot: string, page: string) =
 
     fileShouldBeExcluded |> not
 
+let excludedFilePathParts = [
+    "_public"
+    ".git"
+    "_bin"
+    "_lib"
+    "_data"
+    "_settings"
+]
+
+let recipeImagePredicate (projectRoot: string, page: string) =
+    let ext = Path.GetExtension page
+    let file = Path.GetFileName page
+
+    List.contains ext [ ".jpg"; ".jpeg"; ".png" ]
+    && file.StartsWith "recipe-"
+    && not (excludedFilePathParts |> List.exists page.Contains)
+
 
 let config = {
     Generators = [
@@ -69,6 +81,19 @@ let config = {
             Script = "recipe.fsx"
             Trigger = OnFilePredicate recipePredicate
             OutputFile = ChangeExtension "html"
+        }
+        {
+            Script = "recipeimages.fsx"
+            Trigger = OnFilePredicate recipeImagePredicate
+            OutputFile =
+                Custom(fun page ->
+                    let dir, fileName, ext =
+                        Path.GetDirectoryName page,
+                        Path.GetFileNameWithoutExtension page,
+                        Path.GetExtension page
+
+                    Path.Combine(dir, $"transformed-{fileName}{ext}")
+                )
         }
         {
             Script = "staticfile.fsx"

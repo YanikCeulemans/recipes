@@ -237,7 +237,7 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
         ]
         div [ Class "content article-body" ] [
             div [ Class "block" ] [
-                figure [ Class "image" ] [ img [ Src recipe.Image ] ]
+                figure [ Class "image is-4by3" ] [ img [ Src recipe.Image ] ]
             ]
             div [ Class "columns" ] [
                 div [ Class "column" ] [
