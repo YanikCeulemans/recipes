@@ -222,7 +222,7 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
 
     article [ Class "card" ] [
         div [ Class "card-image" ] [
-            figure [ Class "image is-4by3" ] [
+            figure [ Class "image is-16by9" ] [
                 img [
                     Src(
                         recipe.Image
@@ -253,7 +253,7 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
         ]
         div [ Class "content article-body" ] [
             div [ Class "block" ] [
-                figure [ Class "image is-4by3" ] [
+                figure [ Class "image is-16by9" ] [
                     img [
                         Src(
                             recipe.Image

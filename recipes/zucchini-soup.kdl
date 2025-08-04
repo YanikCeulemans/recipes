@@ -7,7 +7,7 @@ recipe {
     info "Total time" "45 mins"
   }
 
-  image "https://placehold.co/400x300"
+  image "https://placehold.co/400x225"
 
   ingredients serving=2 {
     ingredient "olive oil" {

@@ -14,10 +14,10 @@ let generate (ctx: SiteContents) (projectRoot: string) (page: string) =
     let r =
         imageJob
             .Decode(imagesBytes)
-            .Constrain(Constraint(ConstraintMode.Aspect_Crop, 4u, 3u))
+            .Constrain(Constraint(ConstraintMode.Aspect_Crop, 16u, 9u))
             .Branch(fun n ->
                 n
-                    .ResizerCommands("width=400&height=300")
+                    .ResizerCommands("width=400")
                     .EncodeToBytes(WebPLossyEncoder 80f)
             )
             .EncodeToBytes(WebPLossyEncoder 80f)
