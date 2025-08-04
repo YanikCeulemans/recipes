@@ -17,14 +17,10 @@ let generate (ctx: SiteContents) (projectRoot: string) (page: string) =
             .Constrain(Constraint(ConstraintMode.Aspect_Crop, 4u, 3u))
             .Branch(fun n ->
                 n
-                    // TODO: This downscaling destroys the image quality
-                    // somehow, perhaps there is some option in the image
-                    // library that we're not using here in the resizer
-                    // commands
                     .ResizerCommands("width=400&height=300")
-                    .EncodeToBytes(WebPLossyEncoder 1f)
+                    .EncodeToBytes(WebPLossyEncoder 80f)
             )
-            .EncodeToBytes(WebPLossyEncoder 1f)
+            .EncodeToBytes(WebPLossyEncoder 80f)
             .Finish()
             .InProcessAndDisposeAsync()
             .Result

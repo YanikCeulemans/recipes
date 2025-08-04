@@ -226,11 +226,13 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 img [
                     Src(
                         recipe.Image
-                        |> Path.modifyExt (always ".webp")
-                        |> Path.modifyFileName (String.prefix "thumbnail-")
-                        |> fun s ->
-                            printfn "in summary src: %A" s
-                            s
+                        |> Some
+                        |> Option.filter (fun i -> not (i.Contains "://")) // TODO: better check for URL
+                        |> Option.map (
+                            Path.modifyExt (always ".webp")
+                            >> Path.modifyFileName (String.prefix "thumbnail-")
+                        )
+                        |> Option.defaultValue recipe.Image
                     )
                 ]
             ]
@@ -252,7 +254,15 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
         div [ Class "content article-body" ] [
             div [ Class "block" ] [
                 figure [ Class "image is-4by3" ] [
-                    img [ Src(recipe.Image |> Path.modifyExt (always ".webp")) ]
+                    img [
+                        Src(
+                            recipe.Image
+                            |> Some
+                            |> Option.filter (fun i -> not (i.Contains "://")) // TODO: better check for URL
+                            |> Option.map (Path.modifyExt (always ".webp"))
+                            |> Option.defaultValue recipe.Image
+                        )
+                    ]
                 ]
             ]
             div [ Class "columns" ] [
