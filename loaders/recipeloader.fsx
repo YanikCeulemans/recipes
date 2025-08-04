@@ -5,8 +5,10 @@
 #load "../prelude.fsx"
 #load "../parsers.fsx"
 
+open System
 open System.IO
 open Kadlet
+open Prelude
 
 type IngredientAmount =
     | ToTaste
@@ -131,12 +133,33 @@ module Ingredients =
             }
         }
 
+type RecipeImage =
+    | ExternalImage of Uri
+    | InternalImage of string
+
+module RecipeImage =
+    open FsToolkit.ErrorHandling
+
+    let ofString (candidate: string) =
+        match candidate with
+        | Uri u -> Validation.ok (ExternalImage u)
+        | _ -> Validation.ok (InternalImage candidate)
+
+    let isExternalImage =
+        function
+        | ExternalImage _ -> true
+        | InternalImage _ -> false
+
+    let format =
+        function
+        | ExternalImage uri -> uri.AbsoluteUri
+        | InternalImage p -> p
 
 type Recipe = {
     Name: string
     Tags: string array option
     KeyInfo: Map<string, string> option
-    Image: string
+    Image: RecipeImage
     Ingredients: Ingredients
     Instructions: string array
 }
@@ -224,6 +247,7 @@ module Recipe =
                 KdlParser.Combinators.nodeWith
                     "image"
                     (firstArg KdlValueParser.Primitives.str)
+                |> KdlParser.andThen RecipeImage.ofString
 
             and! ingredients =
                 KdlParser.Combinators.nodeWith
@@ -256,8 +280,6 @@ type RecipeEnvelope = {
 let contentDir = "recipes"
 
 let reader = KdlReader()
-
-open Prelude
 
 let loadFile (rootDir: string) (filePath: string) : RecipeEnvelope =
     use fs = File.OpenRead filePath

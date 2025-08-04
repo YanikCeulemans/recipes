@@ -227,12 +227,17 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                     Src(
                         recipe.Image
                         |> Some
-                        |> Option.filter (fun i -> not (i.Contains "://")) // TODO: better check for URL
+                        |> Option.filter (
+                            Recipeloader.RecipeImage.isExternalImage >> not
+                        )
                         |> Option.map (
-                            Path.modifyExt (always ".webp")
+                            Recipeloader.RecipeImage.format
+                            >> Path.modifyExt (always ".webp")
                             >> Path.modifyFileName (String.prefix "thumbnail-")
                         )
-                        |> Option.defaultValue recipe.Image
+                        |> Option.defaultValue (
+                            Recipeloader.RecipeImage.format recipe.Image
+                        )
                     )
                 ]
             ]
@@ -258,9 +263,16 @@ let recipeLayout (recipe: Recipeloader.Recipe) =
                         Src(
                             recipe.Image
                             |> Some
-                            |> Option.filter (fun i -> not (i.Contains "://")) // TODO: better check for URL
-                            |> Option.map (Path.modifyExt (always ".webp"))
-                            |> Option.defaultValue recipe.Image
+                            |> Option.filter (
+                                Recipeloader.RecipeImage.isExternalImage >> not
+                            )
+                            |> Option.map (
+                                Recipeloader.RecipeImage.format
+                                >> Path.modifyExt (always ".webp")
+                            )
+                            |> Option.defaultValue (
+                                Recipeloader.RecipeImage.format recipe.Image
+                            )
                         )
                     ]
                 ]

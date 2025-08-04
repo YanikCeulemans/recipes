@@ -71,3 +71,13 @@ module Path =
 
         let newExt = (buildExt ext).TrimStart '.'
         Path.Combine(dir, $"%s{extlessPath}.%s{newExt}")
+
+[<AutoOpen>]
+module ActivePatterns =
+    open System
+
+    let (|Uri|_|) candidate =
+        try
+            Some(System.Uri candidate) // TODO: This succeeds for file paths too, I expected it to only succeed for URLs
+        with _ ->
+            None
