@@ -19,6 +19,9 @@ module String =
 
     let prefix prefix (str: string) = prefix + str
 
+    let replace (target: string) (replacement: string) (text: string) =
+        text.Replace(target, replacement)
+
 module Result =
     let ap
         (ma: Result<'a, string>)

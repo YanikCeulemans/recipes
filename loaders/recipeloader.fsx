@@ -266,12 +266,7 @@ let loadFile (rootDir: string) (filePath: string) : RecipeEnvelope =
     let p = Parsers.KdlParser.Combinators.node "recipe" Recipe.parser
 
     let link =
-        let dir =
-            (Path.GetDirectoryName filePath).Replace(rootDir, "").TrimStart '/'
-
-        let file = Path.modifyExt (always ".html") filePath
-
-        Path.Combine(dir, file)
+        Path.modifyExt (always ".html") filePath |> String.replace rootDir ""
 
     match Parsers.KdlParser.runParser p doc with
     | Ok r -> {
