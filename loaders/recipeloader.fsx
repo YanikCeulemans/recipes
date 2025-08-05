@@ -142,8 +142,9 @@ module RecipeImage =
 
     let ofString (candidate: string) =
         match candidate with
-        | Uri u -> Validation.ok (ExternalImage u)
-        | _ -> Validation.ok (InternalImage candidate)
+        | FileUri u -> Validation.ok (InternalImage u.AbsolutePath)
+        | ExternalUri u -> Validation.ok (ExternalImage u)
+        | _ -> Validation.error $"could not parse candidate {candidate} into a RecipeImage"
 
     let isExternalImage =
         function

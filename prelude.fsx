@@ -78,6 +78,16 @@ module ActivePatterns =
 
     let (|Uri|_|) candidate =
         try
-            Some(System.Uri candidate) // TODO: This succeeds for file paths too, I expected it to only succeed for URLs
+            Some(System.Uri candidate)
         with _ ->
             None
+
+    let (|FileUri|_|) =
+        function
+        | Uri uri when uri.IsFile -> Some uri
+        | _ -> None
+
+    let (|ExternalUri|_|) =
+        function
+        | Uri uri when not uri.IsFile -> Some uri
+        | _ -> None

@@ -220,6 +220,9 @@ let keyInfoView (recipe: Recipeloader.Recipe) = [
 let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
 
+    // TODO: These cards look weird when they are not all the size height. This
+    // can occur when the title of the recipe wraps due to its length, fix me
+    // pls
     article [ Class "card" ] [
         div [ Class "card-image" ] [
             figure [ Class "image is-16by9" ] [
