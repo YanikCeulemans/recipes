@@ -16,14 +16,14 @@ let generate' (ctx: SiteContents) (_: string) =
         |> Option.defaultValue ("", 10)
 
 
-    let psts =
+    let rcps =
         recipes
         |> Seq.sortByDescending (fun r -> r.Recipe.Name)
         |> Seq.toList
         |> List.chunkBySize postPageSize
         |> List.map (List.map Layout.recipeSummary)
 
-    let pages = List.length psts
+    let pages = List.length rcps
 
     let getFilenameForIndex i =
         if i = 0 then
@@ -31,7 +31,7 @@ let generate' (ctx: SiteContents) (_: string) =
         else
             sprintf "posts/page%i.html" i
 
-    let layoutForPostSet i psts =
+    let layoutForPostSet i rcps =
         let nextPage =
             if i = pages - 1 then
                 "#"
@@ -41,16 +41,15 @@ let generate' (ctx: SiteContents) (_: string) =
         let previousPage =
             if i = 0 then "#" else "/" + getFilenameForIndex (i - 1)
 
-        let chunkedRecipes = psts |> List.chunkBySize 3
-
         Layout.layout ctx "Home" [
             div [ Class "container" ] [
                 section [ Class "my-6" ] [
-                    for recipeChunk in chunkedRecipes do
-                        div [ Class "columns" ] [
-                            for recipe in recipeChunk do
-                                div [ Class "column" ] [ recipe ]
+                    div [ Class "fixed-grid has-3-cols" ] [
+                        div [ Class "grid is-gap-3" ] [
+                            for recipe in rcps do
+                                div [ Class "cell" ] [ recipe ]
                         ]
+                    ]
                 ]
             ]
             div [ Class "container" ] [
@@ -62,9 +61,9 @@ let generate' (ctx: SiteContents) (_: string) =
             ]
         ]
 
-    psts
-    |> List.mapi (fun i psts ->
-        getFilenameForIndex i, layoutForPostSet i psts |> Layout.render ctx
+    rcps
+    |> List.mapi (fun i rcps ->
+        getFilenameForIndex i, layoutForPostSet i rcps |> Layout.render ctx
     )
 
 let generate (ctx: SiteContents) (projectRoot: string) (page: string) =

@@ -220,10 +220,7 @@ let keyInfoView (recipe: Recipeloader.Recipe) = [
 let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
 
-    // TODO: These cards look weird when they are not all the size height. This
-    // can occur when the title of the recipe wraps due to its length, fix me
-    // pls
-    article [ Class "card" ] [
+    article [ Class "card full-height vstack" ] [
         div [ Class "card-image" ] [
             figure [ Class "image is-16by9" ] [
                 img [
@@ -245,7 +242,7 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 ]
             ]
         ]
-        div [ Class "card-content" ] [
+        div [ Class "card-content flex-grow vstack justify-between" ] [
             h3 [ Class "is-size-3 has-text-centered block" ] [
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
