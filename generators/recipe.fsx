@@ -12,7 +12,7 @@ let generate' (ctx: SiteContents) (page: string) =
 
     Layout.layout ctx recipeEnvelope.Recipe.Name [
         div [ Class "container" ] [
-            section [] [ Layout.recipeLayout recipeEnvelope.Recipe ]
+            section [] [ Layout.recipeLayout recipeEnvelope ]
         ]
     ]
 

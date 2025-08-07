@@ -257,10 +257,14 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
         ]
     ]
 
-let recipeLayout (recipe: Recipeloader.Recipe) =
+let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
+    let recipe = recipeEnvelope.Recipe
+
     div [] [
         div [ Class "media-content has-text-centered block" ] [
-            p [ Class "title" ] [ a [ Href "#todo" ] [ !!recipe.Name ] ]
+            p [ Class "title" ] [
+                a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
+            ]
             yield! keyInfoView recipe
         ]
         div [ Class "content article-body" ] [
