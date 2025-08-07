@@ -257,6 +257,9 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
         ]
     ]
 
+let sortIngredients (ingredients: Recipeloader.Ingredient seq) =
+    ingredients |> Seq.sortBy Recipeloader.Ingredient.isToTaste
+
 let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
 
@@ -323,7 +326,8 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                                     ] [ !!"+" ]
                                 ]
                             ]
-                        for ingredient in recipe.Ingredients.Ingredients ->
+                        for ingredient in
+                            sortIngredients recipe.Ingredients.Ingredients ->
                             span [ Class "panel-block" ] [
                                 ingredientView
                                     recipe.Ingredients.Serving

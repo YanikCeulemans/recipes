@@ -39,6 +39,11 @@ module Ingredient =
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
+    let isToTaste (ingredient: Ingredient) =
+        match ingredient.Amount with
+        | ToTaste -> true
+        | _ -> false
+
     let private amountParser (node: KdlNode) : KdlParser<IngredientAmount> =
         match node.Identifier with
         | "amount" ->
@@ -144,7 +149,9 @@ module RecipeImage =
         match candidate with
         | FileUri u -> Validation.ok (InternalImage u.AbsolutePath)
         | ExternalUri u -> Validation.ok (ExternalImage u)
-        | _ -> Validation.error $"could not parse candidate {candidate} into a RecipeImage"
+        | _ ->
+            Validation.error
+                $"could not parse candidate {candidate} into a RecipeImage"
 
     let isExternalImage =
         function
