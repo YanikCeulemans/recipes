@@ -70,37 +70,15 @@ module KdlParser =
         Array.foldBack go parsers (rtn []) |> map Array.ofList
 
     module Combinators =
-        let requireSingle
-            (reason: string)
-            (parser: KdlParser<'a array>)
-            : KdlParser<'a> =
-            fun doc ->
-                runParser parser doc
-                |> Result.bind (fun xs ->
-                    match xs with
-                    | [| x |] -> Ok x
-                    | _ -> Validation.error reason
-                )
-
-        let requireSome
-            (reason: string)
-            (parser: KdlParser<'a option>)
-            : KdlParser<'a> =
-            fun doc ->
-                runParser parser doc
-                |> Result.bind (fun xs ->
-                    match xs with
-                    | Some x -> Ok x
-                    | _ -> Validation.error reason
-                )
+        let private docNodes (doc: KdlDocument) =
+            doc.Nodes |> Option.ofObj |> Option.map seq
 
         let private firstNodeNamed (name: string) (nodes: KdlNode seq) =
             nodes |> Seq.tryFind (fun n -> n.Identifier = name)
 
         let node (name: string) (parser: KdlParser<'a>) : KdlParser<'a> =
             fun doc ->
-                // TODO: Nodes can be <null> when node has no children
-                match firstNodeNamed name doc.Nodes with
+                match docNodes doc |> Option.bind (firstNodeNamed name) with
                 | None ->
                     Validation.error
                         $"expected to find node named '{name}' in kdl document:\n{doc.ToKdlString()}"
@@ -108,8 +86,9 @@ module KdlParser =
 
         let singleNodeWith (parser: KdlNode -> KdlParser<'a>) : KdlParser<'a> =
             fun doc ->
-                // TODO: Nodes can be <null> when node has no children
-                match List.ofSeq doc.Nodes with
+                match
+                    docNodes doc |> Option.defaultValue Seq.empty |> List.ofSeq
+                with
                 | [ n ] -> parser n doc
                 | other ->
                     Validation.error
@@ -121,7 +100,6 @@ module KdlParser =
                 KdlValue array -> Map<string, KdlValue> -> KdlParser<'a>)
             : KdlParser<'a> =
             fun doc ->
-                // TODO: Nodes can be <null> when node has no children
                 match firstNodeNamed name doc.Nodes with
                 | None ->
                     Validation.error
@@ -142,8 +120,8 @@ module KdlParser =
                     -> KdlParser<'a>)
             : KdlParser<'a array> =
             fun doc ->
-                // TODO: Nodes can be <null> when node has no children
-                doc.Nodes
+                docNodes doc
+                |> Option.defaultValue Seq.empty
                 |> Seq.map (fun node ->
                     let args = Array.ofSeq node.Arguments
 
@@ -161,8 +139,8 @@ module KdlParser =
             (parser: KdlNode -> KdlParser<'a>)
             : KdlParser<'a array> =
             fun doc ->
-                // TODO: Nodes can be <null> when node has no children
-                doc.Nodes
+                docNodes doc
+                |> Option.defaultValue Seq.empty
                 |> Seq.filter (fun node -> node.Identifier = name)
                 |> Seq.map parser
                 |> Array.ofSeq
