@@ -9,33 +9,24 @@ recipe {
 
   image "https://placehold.co/400x225"
 
-  ingredients serving=2 {
-    ingredient "olive oil" {
-      amount 3 "tbsp"
+  ingredients serving=4 {
+    ingredient "zucchini" {
+      amount 500 "g"
     }
-    ingredient "orzo" {
-      amount 300 "g"
-    }
-    ingredient "shallots" {
-      amount 2
+    ingredient "onions" {
+      amount 1
     }
     ingredient "garlic" {
       amount 1 "clove"
     }
-    ingredient "bell pepper" {
-      amount 2
+    ingredient "potato" "waxy" {
+      amount 1
     }
-    ingredient "eggplant" {
-      amount 2
+    ingredient "vegetable broth" {
+      amount 750 "ml"
     }
-    ingredient "olives" {
-      amount 200 "g"
-    }
-    ingredient "feta" {
-      amount 200 "g"
-    }
-    ingredient "panko" "breadcrumbs" {
-      amount 140 "g"
+    ingredient "chicken thigh fillet" "boneless" {
+      amount 4
     }
     ingredient "salt" {
       to-taste
@@ -43,29 +34,24 @@ recipe {
     ingredient "pepper" {
       to-taste
     }
-    ingredient "mediterranean herbs" {
+    ingredient "olive oil" {
       to-taste
     }
   }
 
   instructions {
-    step "Peel and dice the eggplants"
-    step "Dice the bell peppers"
-    step "Heat up the olive oil in a large skillet"
-    step "Fry the eggplants on low-medium heat with the lid on"
-    step "Peel and slice the shallots in half rings"
-    step "Add the diced bell peppers and crushed garlic to the onions and stir for a couple of minutes"
-    step "Prepare the vegetable stock in a small pot"
-    step "Drain the kidney beans and rinse them under the tap"
-    step "Add the tomato paste and pepper to the chili and stir for 2 minutes"
-    step "Boil around 3:1 water:rice and cook the rice for 11 minutes"
-    step "Add the drained kidney beans to the chili and stir"
-    step "Add the vegetable stock to the chili"
-    step "Let the chili simmer until well cooked, this takes about 15 minutes"
-    step "Drain the rice"
-    step "Once the chili is well cooked, add the rice"
-    step "Drain and add the corn to the chili"
-    step "Shortly heat up 1 tortilla per person in the microwave at 800W"
-    step "Serve a small portion of chili in the center of the tortilla, and wrap it tight"
+    step "Season the chicken with salt and lots of pepper, rub it with olive oil"
+    step "Grill the chicken in a grilling pan until cooked and brown"
+    step "Slice the chicken and set aside"
+    step "Dice the zucchini in medium sized chunks"
+    step "Peel and dice the onion roughly"
+    step "Peel and dice the garlic rougly"
+    step "Prepare the vegetable broth"
+    step "Heat up some olive oil in a large soup pot and fry the zucchini, onions and garlic on medium heat for about 10 minutes"
+    step "Peel and dice the potato rougly"
+    step "Add the potato and vegetable broth to the soup and let it simmer for about 20 minutes"
+    step "Season the soup with a bit of pepper"
+    step "Blend the soup with a hand blender until it is smooth"
+    step "Season the soup to taste with salt and pepper"
   }
 }
