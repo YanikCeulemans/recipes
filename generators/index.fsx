@@ -44,11 +44,9 @@ let generate' (ctx: SiteContents) (_: string) =
         Layout.layout ctx "Home" [
             div [ Class "container" ] [
                 section [ Class "my-6" ] [
-                    div [ Class "fixed-grid has-3-cols" ] [
-                        div [ Class "grid is-gap-3" ] [
-                            for recipe in rcps do
-                                div [ Class "cell" ] [ recipe ]
-                        ]
+                    div [ Class "grid is-gap-3 is-col-min-10" ] [
+                        for recipe in rcps do
+                            div [ Class "cell" ] [ recipe ]
                     ]
                 ]
             ]

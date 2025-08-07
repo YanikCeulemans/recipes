@@ -6,16 +6,6 @@ html,body {
 .full-height {
   height: 100%;
 }
-.vstack {
-  display: flex;
-  flex-direction: column;
-}
-.justify-between {
-  justify-content: space-between;
-}
-.flex-grow {
-  flex-grow: 1;
-}
 .navbar.is-white {
   background: #F0F2F4;
 }

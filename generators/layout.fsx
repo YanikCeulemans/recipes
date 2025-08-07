@@ -220,7 +220,7 @@ let keyInfoView (recipe: Recipeloader.Recipe) = [
 let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
 
-    article [ Class "card full-height vstack" ] [
+    article [ Class "card full-height is-flex is-flex-direction-column" ] [
         div [ Class "card-image" ] [
             figure [ Class "image is-16by9" ] [
                 img [
@@ -242,7 +242,14 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 ]
             ]
         ]
-        div [ Class "card-content flex-grow vstack justify-between" ] [
+        div [
+            Class
+                "card-content \
+                is-flex-grow-1 \
+                is-flex \
+                is-flex-direction-column \
+                justify-between"
+        ] [
             h3 [ Class "is-size-3 has-text-centered block" ] [
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
