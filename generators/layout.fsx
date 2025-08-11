@@ -71,11 +71,6 @@ let layout (ctx: SiteContents) active bodyCnt =
             ]
             link [
                 Rel "stylesheet"
-                Href
-                    "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-            ]
-            link [
-                Rel "stylesheet"
                 Href "https://fonts.googleapis.com/css?family=Open+Sans"
             ]
             link [
@@ -101,6 +96,21 @@ let layout (ctx: SiteContents) active bodyCnt =
                         ] [ span [] []; span [] []; span [] [] ]
                     ]
                     div [ Id "navbarMenu"; Class "navbar-menu" ] menuEntries
+                    div [ Class "field" ] [
+                        p [ Class "control has-icons-left has-icons-right" ] [
+                            input [
+                                Class "input"
+                                Type "search"
+                                Placeholder "Search recipe"
+                            ]
+                            span [ Class "icon is-small is-left" ] [
+                                i [ Class "fas fa-search" ] []
+                            ]
+                            span [ Class "icon is-small is-right" ] [
+                                i [ Class "fas fa-close" ] []
+                            ]
+                        ]
+                    ]
                 ]
             ]
             yield! bodyCnt
