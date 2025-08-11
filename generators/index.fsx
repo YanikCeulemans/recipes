@@ -1,5 +1,6 @@
 #r "../_lib/Fornax.Core.dll"
 #load "layout.fsx"
+#load "../prelude.fsx"
 
 open Html
 
@@ -21,7 +22,7 @@ let generate' (ctx: SiteContents) (_: string) =
         |> Seq.sortByDescending (fun r -> r.Recipe.Name)
         |> Seq.toList
         |> List.chunkBySize postPageSize
-        |> List.map (List.map Layout.recipeSummary)
+    // |> List.map (List.map Layout.recipeSummary)
 
     let pages = List.length rcps
 
@@ -31,7 +32,7 @@ let generate' (ctx: SiteContents) (_: string) =
         else
             sprintf "posts/page%i.html" i
 
-    let layoutForPostSet i rcps =
+    let layoutForPostSet i (rcps: Recipeloader.RecipeEnvelope list) =
         let nextPage =
             if i = pages - 1 then
                 "#"
@@ -46,7 +47,14 @@ let generate' (ctx: SiteContents) (_: string) =
                 section [ Class "my-6" ] [
                     div [ Class "grid is-gap-3 is-col-min-10" ] [
                         for recipe in rcps do
-                            div [ Class "cell" ] [ recipe ]
+                            div [
+                                Class "cell"
+                                HtmlProperties.Custom("x-data", "")
+                                HtmlProperties.Custom(
+                                    "x-show",
+                                    $"!$store.search || '{recipe.Recipe.Name}'.includes($store.search)"
+                                )
+                            ] [ Layout.recipeSummary recipe ]
                     ]
                 ]
             ]
@@ -61,7 +69,10 @@ let generate' (ctx: SiteContents) (_: string) =
 
     rcps
     |> List.mapi (fun i rcps ->
-        getFilenameForIndex i, layoutForPostSet i rcps |> Layout.render ctx
+        getFilenameForIndex i,
+        layoutForPostSet i rcps
+        |> Layout.render ctx
+        |> Prelude.String.prefix "<!DOCTYPE html>"
     )
 
 let generate (ctx: SiteContents) (projectRoot: string) (page: string) =

@@ -33,6 +33,12 @@ let injectWebsocketCode (webpage: string) =
     let index = webpage.IndexOf head
     webpage.Insert(index + head.Length + 1, websocketScript)
 
+let XText (v: string) = HtmlProperties.Custom("x-text", v)
+let XData (v: string) = HtmlProperties.Custom("x-data", v)
+let XOnClick (v: string) = HtmlProperties.Custom("x-on:click", v)
+let XModel (v: string) = HtmlProperties.Custom("x-model", v)
+let XShow (v: string) = HtmlProperties.Custom("x-show", v)
+
 let layout (ctx: SiteContents) active bodyCnt =
     let pages =
         ctx.TryGetValues<Pageloader.Page>() |> Option.defaultValue Seq.empty
@@ -78,37 +84,50 @@ let layout (ctx: SiteContents) active bodyCnt =
                 Href
                     "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
             ]
+            link [
+                Rel "stylesheet"
+                Href
+                    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+            ]
             link [ Rel "stylesheet"; Type "text/css"; Href "/style/style.css" ]
             script [
                 Defer true
                 Src
                     "https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
             ] []
-
+            script [ Defer true ] [
+                !!"""
+                document.addEventListener('alpine:init', () => {
+                    Alpine.store('search', '');
+                });
+                """
+            ]
         ]
         body [] [
             nav [ Class "navbar" ] [
                 div [ Class "container" ] [
                     div [ Class "navbar-brand" ] [
-                        span [
-                            Class "navbar-burger burger"
-                            HtmlProperties.Custom("data-target", "navbarMenu")
-                        ] [ span [] []; span [] []; span [] [] ]
+                        a [ Class "navbar-item" ] [ !!"Home" ]
                     ]
-                    div [ Id "navbarMenu"; Class "navbar-menu" ] menuEntries
-                    div [ Class "field" ] [
-                        p [ Class "control has-icons-left has-icons-right" ] [
+                    div [ Class "navbar-item field is-flex-grow-1"; XData "" ] [
+                        p [
+                            Class
+                                "control has-icons-left has-icons-right is-flex-grow-1"
+                        ] [
                             input [
                                 Class "input"
                                 Type "search"
                                 Placeholder "Search recipe"
+                                XModel "$store.search"
                             ]
                             span [ Class "icon is-small is-left" ] [
-                                i [ Class "fas fa-search" ] []
+                                i [ Class "fas fa-magnifying-glass" ] []
                             ]
-                            span [ Class "icon is-small is-right" ] [
-                                i [ Class "fas fa-close" ] []
-                            ]
+                            span [
+                                Class "icon is-small is-right is-clickable"
+                                XShow "!!$store.search"
+                                XOnClick "$store.search = ''"
+                            ] [ i [ Class "fas fa-close" ] [] ]
                         ]
                     ]
                 ]
@@ -123,10 +142,6 @@ let render (ctx: SiteContents) cnt =
     cnt
     |> HtmlElement.ToString
     |> fun n -> if disableLiveRefresh then n else injectWebsocketCode n
-
-let XText (v: string) = HtmlProperties.Custom("x-text", v)
-let XData (v: string) = HtmlProperties.Custom("x-data", v)
-let XOnClick (v: string) = HtmlProperties.Custom("x-on:click", v)
 
 let private ingredientView
     (servingAmount: int)
