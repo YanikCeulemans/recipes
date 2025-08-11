@@ -2,7 +2,6 @@
 #if !FORNAX
 #load "../prelude.fsx"
 #load "../loaders/recipeloader.fsx"
-#load "../loaders/postloader.fsx"
 #load "../loaders/pageloader.fsx"
 #load "../loaders/globalloader.fsx"
 #endif
@@ -109,66 +108,11 @@ let layout (ctx: SiteContents) active bodyCnt =
     ]
 
 let render (ctx: SiteContents) cnt =
-    let disableLiveRefresh =
-        ctx.TryGetValue<Postloader.PostConfig>()
-        |> Option.map (fun n -> n.disableLiveRefresh)
-        |> Option.defaultValue false
-
     let disableLiveRefresh = true
 
     cnt
     |> HtmlElement.ToString
     |> fun n -> if disableLiveRefresh then n else injectWebsocketCode n
-
-let published (post: Postloader.Post) =
-    post.Metadata.Published
-    |> Option.bind (fun dtOnlyText ->
-        match System.DateOnly.TryParse dtOnlyText with
-        | true, dateOnly -> Some dateOnly
-        | false, _ -> None
-    )
-    |> Option.defaultValue (System.DateOnly.FromDateTime System.DateTime.Now)
-    |> fun n -> n.ToString "yyyy-MM-dd"
-
-let postLayout (useSummary: bool) (post: Postloader.Post) =
-    let props = post.Metadata.Props |> Option.defaultValue []
-    let tags = post.Metadata.Tags |> Option.defaultValue []
-
-    div [ Class "card article" ] [
-        div [ Class "card-content" ] [
-            div [ Class "media-content has-text-centered" ] [
-                p [ Class "title article-title" ] [
-                    a [ Href post.Link ] [ !!post.Metadata.Title ]
-                ]
-                p [ Class "subtitle is-6 article-subtitle" ] [
-                    a [ Href "#" ] [ !!(defaultArg post.Metadata.Author "") ]
-                    !!(sprintf "on %s" (published post))
-                ]
-                match props with
-                | [] -> ()
-                | props ->
-                    nav [ Class "level" ] [
-                        for prop in props ->
-                            div [ Class "level-item has-text-centered" ] [
-                                div [] [
-                                    p [ Class "heading" ] [ !!prop.Key ]
-                                    p [ Class "title" ] [ !!prop.Value ]
-                                ]
-                            ]
-                    ]
-                match tags with
-                | [] -> ()
-                | tags ->
-                    div [ Class "article-tags is-flex gap-3" ] [
-                        for tag in tags -> span [ Class "tag" ] [ !!tag ]
-                    ]
-            ]
-            div [ Class "content article-body" ] [
-                !!(if useSummary then post.Summary else post.Content)
-
-            ]
-        ]
-    ]
 
 let XText (v: string) = HtmlProperties.Custom("x-text", v)
 let XData (v: string) = HtmlProperties.Custom("x-data", v)

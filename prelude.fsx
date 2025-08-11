@@ -60,8 +60,6 @@ module Path =
             Path.GetFileNameWithoutExtension fullPath,
             Path.GetExtension fullPath
 
-        printfn "modify filename: %s %s %s %s" fullPath dir fileName ext
-
         Path.Combine(dir, f fileName + ext)
 
     let modifyExt (buildExt: string -> string) (fileName: string) =
