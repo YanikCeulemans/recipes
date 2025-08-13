@@ -4,6 +4,8 @@
 
 open Html
 
+let classes cs = String.concat " " cs |> Class
+
 let generate' (ctx: SiteContents) (_: string) =
     let recipes =
         ctx.TryGetValues<Recipeloader.RecipeEnvelope>()
@@ -45,10 +47,16 @@ let generate' (ctx: SiteContents) (_: string) =
         Layout.layout ctx "Home" [
             div [ Class "container" ] [
                 section [ Class "my-6" ] [
-                    div [ Class "grid is-gap-3 is-col-min-10" ] [
+                    div [
+                        classes [
+                            "is-gap-3"
+                            "grid"
+                            "recipe-summaries-container"
+                        ]
+                    ] [
                         for recipe in rcps do
                             div [
-                                Class "cell"
+                                classes [ "cell" ]
                                 HtmlProperties.Custom("x-data", "")
                                 HtmlProperties.Custom(
                                     "x-show",

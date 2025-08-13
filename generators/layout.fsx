@@ -219,7 +219,7 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 is-flex-direction-column \
                 justify-between"
         ] [
-            h3 [ Class "is-size-3 has-text-centered block" ] [
+            h3 [ Class "is-size-3 has-text-centered block is-flex-grow-1" ] [
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
             yield! keyInfoView recipe

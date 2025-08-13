@@ -7,7 +7,7 @@ recipe {
     info "Total time" "1 hour"
   }
 
-  image "https://placehold.co/400x225"
+  image "/images/recipe-orzo-olives-feta.webp"
 
   ingredients serving=2 {
     ingredient "olive oil" {

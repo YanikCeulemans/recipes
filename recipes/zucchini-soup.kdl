@@ -7,7 +7,7 @@ recipe {
     info "Total time" "45 mins"
   }
 
-  image "https://placehold.co/400x225"
+  image "/images/recipe-zucchini-soup.webp"
 
   ingredients serving=4 {
     ingredient "zucchini" {
