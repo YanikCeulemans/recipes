@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "fornax": {
+      "version": "0.16.0-beta002",
+      "commands": [
+        "fornax"
+      ],
+      "rollForward": false
+    }
+  }
+}
