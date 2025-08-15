@@ -3,6 +3,7 @@ let always x _ = x
 
 module List =
     let cons x xs = x :: xs
+    let appendWith x xs = xs @ [ x ]
 
 module Tuple =
     let create a b = a, b

@@ -39,27 +39,14 @@ let XOnClick (v: string) = HtmlProperties.Custom("x-on:click", v)
 let XModel (v: string) = HtmlProperties.Custom("x-model", v)
 let XShow (v: string) = HtmlProperties.Custom("x-show", v)
 
-let layout (ctx: SiteContents) active bodyCnt =
-    let pages =
-        ctx.TryGetValues<Pageloader.Page>() |> Option.defaultValue Seq.empty
-
-    let siteInfo = ctx.TryGetValue<Globalloader.SiteInfo>()
-
+let layout (ctx: SiteContents) (pageTitle: string) bodyCnt =
     let ttl =
-        siteInfo |> Option.map (fun si -> si.title) |> Option.defaultValue ""
-
-    let menuEntries =
-        pages
-        |> Seq.map (fun p ->
-            let cls =
-                if p.title = active then
-                    "navbar-item is-active"
-                else
-                    "navbar-item"
-
-            a [ Class cls; Href p.link ] [ !!p.title ]
-        )
-        |> Seq.toList
+        ctx.TryGetValue<Globalloader.SiteInfo>()
+        |> Option.map (fun si -> si.title)
+        |> List.singleton
+        |> List.appendWith (Some pageTitle)
+        |> List.choose id
+        |> String.concat " | "
 
     html [] [
         head [] [
@@ -107,7 +94,7 @@ let layout (ctx: SiteContents) active bodyCnt =
             nav [ Class "navbar" ] [
                 div [ Class "container" ] [
                     div [ Class "navbar-brand" ] [
-                        a [ Class "navbar-item" ] [ !!"Home" ]
+                        a [ Class "navbar-item"; Href "/" ] [ !!"Home" ]
                     ]
                     div [ Class "navbar-item field is-flex-grow-1"; XData "" ] [
                         p [

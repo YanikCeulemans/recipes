@@ -80,12 +80,7 @@ let config = {
         {
             Script = "index.fsx"
             Trigger = Once
-            OutputFile = MultipleFiles id
-        }
-        {
-            Script = "about.fsx"
-            Trigger = Once
-            OutputFile = NewFileName "about.html"
+            OutputFile = ChangeExtension "html"
         }
     ]
 }
