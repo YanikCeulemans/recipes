@@ -55,7 +55,7 @@ let recipeImagePredicate (projectRoot: string, page: string) =
     let ext = Path.GetExtension page
     let file = Path.GetFileName page
 
-    List.contains ext [ ".jpg"; ".jpeg"; ".png" ]
+    List.contains ext [ ".jpg"; ".jpeg"; ".png"; ".webp" ]
     && file.StartsWith "recipe-"
     && not (excludedFilePathParts |> List.exists page.Contains)
 
