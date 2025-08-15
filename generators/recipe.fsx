@@ -10,7 +10,7 @@ let generate' (ctx: SiteContents) (page: string) =
         |> Option.defaultValue Seq.empty
         |> Seq.find (fun n -> n.FileName.EndsWith page)
 
-    Layout.layout ctx recipeEnvelope.Recipe.Name [
+    Layout.layout ctx (Some recipeEnvelope.Recipe.Name) [
         div [ Class "container" ] [
             section [] [ Layout.recipeLayout recipeEnvelope ]
         ]

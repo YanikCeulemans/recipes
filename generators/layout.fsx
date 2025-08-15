@@ -39,12 +39,12 @@ let XOnClick (v: string) = HtmlProperties.Custom("x-on:click", v)
 let XModel (v: string) = HtmlProperties.Custom("x-model", v)
 let XShow (v: string) = HtmlProperties.Custom("x-show", v)
 
-let layout (ctx: SiteContents) (pageTitle: string) bodyCnt =
+let layout (ctx: SiteContents) (pageTitle: string option) bodyCnt =
     let ttl =
         ctx.TryGetValue<Globalloader.SiteInfo>()
         |> Option.map (fun si -> si.title)
         |> List.singleton
-        |> List.appendWith (Some pageTitle)
+        |> List.appendWith pageTitle
         |> List.choose id
         |> String.concat " | "
 

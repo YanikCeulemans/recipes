@@ -8,7 +8,7 @@ let classes cs = String.concat " " cs |> Class
 
 let generate' (ctx: SiteContents) =
     let layoutForRecipes (rcps: Recipeloader.RecipeEnvelope seq) =
-        Layout.layout ctx "Our recipe book" [
+        Layout.layout ctx None [
             div [ Class "container" ] [
                 section [ Class "my-6" ] [
                     div [
