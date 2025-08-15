@@ -6,7 +6,7 @@ open Html
 
 let classes cs = String.concat " " cs |> Class
 
-let generate' (ctx: SiteContents) (_: string) =
+let generate' (ctx: SiteContents) =
     let layoutForRecipes (rcps: Recipeloader.RecipeEnvelope seq) =
         Layout.layout ctx "Our recipe book" [
             div [ Class "container" ] [
@@ -32,12 +32,14 @@ let generate' (ctx: SiteContents) (_: string) =
             ]
         ]
 
+
     ctx.TryGetValues<Recipeloader.RecipeEnvelope>()
     |> Option.defaultValue Seq.empty
-    |> Seq.sortByDescending (fun r -> r.Recipe.Name)
+    |> Seq.sortBy (fun r -> r.Recipe.Name)
     |> layoutForRecipes
     |> Layout.render ctx
     |> Prelude.String.prefix "<!DOCTYPE html>"
 
-let generate (ctx: SiteContents) (projectRoot: string) (page: string) =
-    generate' ctx page
+let generate (ctx: SiteContents) (_projectRoot: string) (_page: string) =
+    printfn "index generation"
+    generate' ctx

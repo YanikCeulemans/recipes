@@ -79,8 +79,8 @@ let config = {
         }
         {
             Script = "index.fsx"
-            Trigger = Once
-            OutputFile = ChangeExtension "html"
+            Trigger = OnFile "generators/index.fsx"
+            OutputFile = NewFileName "index.html"
         }
     ]
 }
