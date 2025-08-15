@@ -41,5 +41,4 @@ let generate' (ctx: SiteContents) =
     |> Prelude.String.prefix "<!DOCTYPE html>"
 
 let generate (ctx: SiteContents) (_projectRoot: string) (_page: string) =
-    printfn "index generation"
     generate' ctx
