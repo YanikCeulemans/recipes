@@ -173,6 +173,16 @@ let keyInfoView (recipe: Recipeloader.Recipe) = [
         ]
 ]
 
+let tagsView (tags: string array) =
+    match tags with
+    | [||] -> []
+    | _ -> [
+        div [ Class "is-flex is-flex-wrap-wrap is-gap-1" ] [
+
+            for tag in tags -> span [ Class "tag" ] [ !!tag ]
+        ]
+      ]
+
 let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
 
@@ -206,10 +216,11 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 is-flex-direction-column \
                 justify-between"
         ] [
-            h3 [ Class "is-size-3 has-text-centered block is-flex-grow-1" ] [
+            h3 [ Class "scaling-size-3 has-text-centered block is-flex-grow-1" ] [
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
-            yield! keyInfoView recipe
+            yield! recipe.Tags |> Option.map tagsView |> Option.defaultValue []
+        // yield! keyInfoView recipe
         ]
     ]
 

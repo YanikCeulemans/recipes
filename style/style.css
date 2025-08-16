@@ -18,6 +18,9 @@ html,body {
   line-height: 1.4;
   margin: 0 6rem;
 }
+.scaling-size-3 {
+  font-size: min(2rem, calc(.5em + 2vw));
+}
 @media screen and (max-width: 991px) {
   .article-body {
     line-height: 1.4;
