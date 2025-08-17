@@ -5,6 +5,9 @@ html,body {
 .container {
   width: 95%;
 }
+.button {
+  touch-action: manipulation;
+}
 .full-height {
   height: 100%;
 }
