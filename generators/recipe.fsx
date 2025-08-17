@@ -11,9 +11,7 @@ let generate' (ctx: SiteContents) (page: string) =
         |> Seq.find (fun n -> n.FileName.EndsWith page)
 
     Layout.layout ctx (Some recipeEnvelope.Recipe.Name) [
-        div [ Class "container" ] [
-            section [] [ Layout.recipeLayout recipeEnvelope ]
-        ]
+        div [ Class "container" ] [ Layout.recipeLayout recipeEnvelope ]
     ]
 
 let generate (ctx: SiteContents) (projectRoot: string) (page: string) =

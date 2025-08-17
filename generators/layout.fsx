@@ -178,7 +178,6 @@ let tagsView (tags: string array) =
     | [||] -> []
     | _ -> [
         div [ Class "is-flex is-flex-wrap-wrap is-gap-1" ] [
-
             for tag in tags -> span [ Class "tag" ] [ !!tag ]
         ]
       ]
@@ -230,8 +229,8 @@ let sortIngredients (ingredients: Recipeloader.Ingredient seq) =
 let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
 
-    div [] [
-        div [ Class "media-content has-text-centered block" ] [
+    section [ Class "is-clipped" ] [
+        div [ Class "has-text-centered block mt-6" ] [
             p [ Class "title" ] [
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
@@ -270,21 +269,18 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                             p [ Class "panel-heading m-0" ] [ !!"Ingredients" ]
                         yield
                             div [ Class "panel-block" ] [
-                                div [ Class "is-size-4 container level" ] [
+                                div [ Class "is-size-4 container is-flex" ] [
                                     button [
                                         Class "button level-left"
                                         XOnClick
                                             "serving = Math.max(1, serving - 1)"
                                     ] [ !!"-" ]
-                                    span [ Class "level-item" ] [
-                                        span [ Class "columns is-1" ] [
-                                            span [ Class "column" ] [
+                                    span [ Class "level-item is-flex-grow-1" ] [
+                                        span [ Class "is-1 is-flex is-gap-1" ] [
+                                            span [ Class "" ] [
                                                 !! $"Serving: "
                                             ]
-                                            span [
-                                                Class "column"
-                                                XText "serving"
-                                            ] []
+                                            span [ Class ""; XText "serving" ] []
                                         ]
                                     ]
                                     button [
