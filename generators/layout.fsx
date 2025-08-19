@@ -228,7 +228,6 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
             yield! recipe.Tags |> Option.map tagsView |> Option.defaultValue []
-        // yield! keyInfoView recipe
         ]
     ]
 
