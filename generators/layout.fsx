@@ -39,12 +39,17 @@ let XOnClick (v: string) = HtmlProperties.Custom("x-on:click", v)
 let XModel (v: string) = HtmlProperties.Custom("x-model", v)
 let XShow (v: string) = HtmlProperties.Custom("x-show", v)
 
-let layout (ctx: SiteContents) (pageTitle: string option) bodyCnt =
+type LayoutConfig = {
+    PageTitle : string option
+    HasSearchBar : bool
+}
+
+let layout (ctx: SiteContents) (layoutConfig: LayoutConfig) bodyCnt =
     let ttl =
         ctx.TryGetValue<Globalloader.SiteInfo>()
         |> Option.map (fun si -> si.title)
         |> List.singleton
-        |> List.appendWith pageTitle
+        |> List.appendWith layoutConfig.PageTitle
         |> List.choose id
         |> String.concat " | "
 
@@ -96,27 +101,28 @@ let layout (ctx: SiteContents) (pageTitle: string option) bodyCnt =
                     div [ Class "navbar-brand" ] [
                         a [ Class "navbar-item"; Href "/" ] [ !!"Home" ]
                     ]
-                    div [ Class "navbar-item field is-flex-grow-1"; XData "" ] [
-                        p [
-                            Class
-                                "control has-icons-left has-icons-right is-flex-grow-1"
-                        ] [
-                            input [
-                                Class "input"
-                                Type "search"
-                                Placeholder "Search recipe"
-                                XModel "$store.search"
+                    if layoutConfig.HasSearchBar then
+                        div [ Class "navbar-item field is-flex-grow-1"; XData "" ] [
+                            p [
+                                Class
+                                    "control has-icons-left has-icons-right is-flex-grow-1"
+                            ] [
+                                input [
+                                    Class "input"
+                                    Type "search"
+                                    Placeholder "Search recipe"
+                                    XModel "$store.search"
+                                ]
+                                span [ Class "icon is-small is-left" ] [
+                                    i [ Class "fas fa-magnifying-glass" ] []
+                                ]
+                                span [
+                                    Class "icon is-small is-right is-clickable"
+                                    XShow "!!$store.search"
+                                    XOnClick "$store.search = ''"
+                                ] [ i [ Class "fas fa-close" ] [] ]
                             ]
-                            span [ Class "icon is-small is-left" ] [
-                                i [ Class "fas fa-magnifying-glass" ] []
-                            ]
-                            span [
-                                Class "icon is-small is-right is-clickable"
-                                XShow "!!$store.search"
-                                XOnClick "$store.search = ''"
-                            ] [ i [ Class "fas fa-close" ] [] ]
                         ]
-                    ]
                 ]
             ]
             yield! bodyCnt

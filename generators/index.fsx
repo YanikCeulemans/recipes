@@ -8,29 +8,35 @@ let classes cs = String.concat " " cs |> Class
 
 let generate' (ctx: SiteContents) =
     let layoutForRecipes (rcps: Recipeloader.RecipeEnvelope seq) =
-        Layout.layout ctx None [
-            div [ Class "container" ] [
-                section [ Class "my-6" ] [
-                    div [
-                        classes [
-                            "is-gap-3"
-                            "grid"
-                            "recipe-summaries-container"
+        Layout.layout
+            ctx
+            {
+                PageTitle = None
+                HasSearchBar = true
+            }
+            [
+                div [ Class "container" ] [
+                    section [ Class "my-6" ] [
+                        div [
+                            classes [
+                                "is-gap-3"
+                                "grid"
+                                "recipe-summaries-container"
+                            ]
+                        ] [
+                            for recipe in rcps do
+                                div [
+                                    classes [ "cell" ]
+                                    HtmlProperties.Custom("x-data", "")
+                                    HtmlProperties.Custom(
+                                        "x-show",
+                                        $"!$store.search || '{recipe.Recipe.Name}'.includes($store.search)"
+                                    )
+                                ] [ Layout.recipeSummary recipe ]
                         ]
-                    ] [
-                        for recipe in rcps do
-                            div [
-                                classes [ "cell" ]
-                                HtmlProperties.Custom("x-data", "")
-                                HtmlProperties.Custom(
-                                    "x-show",
-                                    $"!$store.search || '{recipe.Recipe.Name}'.includes($store.search)"
-                                )
-                            ] [ Layout.recipeSummary recipe ]
                     ]
                 ]
             ]
-        ]
 
 
     ctx.TryGetValues<Recipeloader.RecipeEnvelope>()
