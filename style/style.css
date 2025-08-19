@@ -12,7 +12,7 @@ html,body {
   height: 100%;
 }
 .recipe-summaries-container {
-  --bulma-grid-column-min: 10rem;
+  --bulma-grid-column-min: 20rem;
 }
 .media-content {
   margin-top: 3rem;
