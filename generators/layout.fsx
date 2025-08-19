@@ -40,8 +40,8 @@ let XModel (v: string) = HtmlProperties.Custom("x-model", v)
 let XShow (v: string) = HtmlProperties.Custom("x-show", v)
 
 type LayoutConfig = {
-    PageTitle : string option
-    HasSearchBar : bool
+    PageTitle: string option
+    HasSearchBar: bool
 }
 
 let layout (ctx: SiteContents) (layoutConfig: LayoutConfig) bodyCnt =
@@ -102,7 +102,10 @@ let layout (ctx: SiteContents) (layoutConfig: LayoutConfig) bodyCnt =
                         a [ Class "navbar-item"; Href "/" ] [ !!"Home" ]
                     ]
                     if layoutConfig.HasSearchBar then
-                        div [ Class "navbar-item field is-flex-grow-1"; XData "" ] [
+                        div [
+                            Class "navbar-item field is-flex-grow-1"
+                            XData ""
+                        ] [
                             p [
                                 Class
                                     "control has-icons-left has-icons-right is-flex-grow-1"
@@ -263,7 +266,7 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                     ]
                 ]
             ]
-            div [ Class "columns" ] [
+            div [ Class "columns mb-6" ] [
                 div [ Class "column" ] [
                     nav [
                         Class "panel"
