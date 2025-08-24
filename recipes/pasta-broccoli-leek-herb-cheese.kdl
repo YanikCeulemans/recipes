@@ -1,5 +1,6 @@
 recipe {
   name "Pasta with broccoli, leek, and herb cheese"
+  tags "veggie" "italian" "pasta" "easy" "1-pan-dish" "savory" "greens"
 
   key-info {
     info "Total time" "30 mins"
