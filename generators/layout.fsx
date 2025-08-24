@@ -196,23 +196,27 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
 
     article [ Class "card full-height is-flex is-flex-direction-column" ] [
         div [ Class "card-image" ] [
-            figure [ Class "image is-16by9" ] [
-                img [
-                    Src(
-                        recipe.Image
-                        |> Some
-                        |> Option.filter (
-                            Recipeloader.RecipeImage.isExternalImage >> not
+            a [ Href recipeEnvelope.Link ] [
+                figure [ Class "image is-16by9" ] [
+                    img [
+                        Src(
+                            recipe.Image
+                            |> Some
+                            |> Option.filter (
+                                Recipeloader.RecipeImage.isExternalImage >> not
+                            )
+                            |> Option.map (
+                                Recipeloader.RecipeImage.format
+                                >> Path.modifyExt (always ".webp")
+                                >> Path.modifyFileName (
+                                    String.prefix "thumbnail-"
+                                )
+                            )
+                            |> Option.defaultValue (
+                                Recipeloader.RecipeImage.format recipe.Image
+                            )
                         )
-                        |> Option.map (
-                            Recipeloader.RecipeImage.format
-                            >> Path.modifyExt (always ".webp")
-                            >> Path.modifyFileName (String.prefix "thumbnail-")
-                        )
-                        |> Option.defaultValue (
-                            Recipeloader.RecipeImage.format recipe.Image
-                        )
-                    )
+                    ]
                 ]
             ]
         ]
