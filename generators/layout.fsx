@@ -65,7 +65,7 @@ let layout (ctx: SiteContents) (layoutConfig: LayoutConfig) bodyCnt =
                 Rel "icon"
                 Type "image/png"
                 Sizes "32x32"
-                Href "/images/favicon.png"
+                Href "/favicon-32x32.png"
             ]
             link [
                 Rel "stylesheet"
