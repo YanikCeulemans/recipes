@@ -10,6 +10,26 @@ open System.IO
 open Kadlet
 open Prelude
 
+type Duration = Duration of TimeSpan
+
+module Duration =
+    open Parsers
+    open Parsers.KdlParser.ComputationExpression
+    open FsToolkit.ErrorHandling
+
+    let parser _args (properties: Map<string, KdlValue>) : KdlParser<Duration> =
+        kdlParser {
+            let! duration = failwith "TODO"
+            // TODO: This map should contain at least one value
+            // Map.tryFind "minutes" properties
+            // |> Option.bind (
+            //     KdlValueParser.runParser KdlValueParser.Primitives.int32
+            // )
+            // |> KdlParser.ofValidation
+
+            return failwith "TODO"
+        }
+
 type IngredientAmount =
     | ToTaste
     | Pieces of int
@@ -163,45 +183,79 @@ module RecipeImage =
         | ExternalImage uri -> uri.AbsoluteUri
         | InternalImage p -> p
 
+type Step = {
+    Description: string
+    Ingredients: Ingredient Set
+}
+
+module Step =
+    open Parsers
+    open Parsers.KdlParser.ComputationExpression
+    open FsToolkit.ErrorHandling
+
+    let parser (node: KdlNode) : KdlParser<Step> =
+        kdlParser {
+            let! description =
+                node.Arguments
+                |> Array.ofSeq
+                |> KdlValueParser.Collections.nth
+                    0
+                    KdlValueParser.Primitives.str
+                |> KdlParser.ofValidation
+
+            and! ingredients =
+                KdlParser.Combinators.childrenNamed
+                    "ingredient"
+                    Ingredient.ingredientParser
+                |> KdlParser.map Set.ofArray
+
+            return {
+                Description = description
+                Ingredients = ingredients
+            }
+        }
+
+type Instructions = { Serving: int; Steps: Step Set }
+
+module Instructions =
+    open Parsers
+    open Parsers.KdlParser.ComputationExpression
+    open FsToolkit.ErrorHandling
+
+    let parser
+        _args
+        (properties: Map<string, KdlValue>)
+        : KdlParser<Instructions> =
+        kdlParser {
+            let! serving =
+                Map.tryFind "serving" properties
+                |> Result.requireSome [
+                    "expected to find the required 'serving' property, but found none"
+                ]
+                |> Result.bind (
+                    KdlValueParser.runParser KdlValueParser.Primitives.int32
+                )
+                |> KdlParser.ofValidation
+
+            and! steps =
+                KdlParser.Combinators.childrenNamed "step" Step.parser
+                |> KdlParser.map Set.ofArray
+
+            return { Serving = serving; Steps = steps }
+        }
+
 type Recipe = {
     Name: string
-    Tags: string array option
-    KeyInfo: Map<string, string> option
+    Tags: string Set option
+    Duration: Duration
     Image: RecipeImage
-    Ingredients: Ingredients
-    Instructions: string array
+    Instructions: Instructions
 }
 
 module Recipe =
     open Parsers
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
-
-    let private keyInfoParser: KdlParser<Map<string, string>> =
-        let keyInfoChildrenParser (node: KdlNode) =
-            let args = Node.args node
-
-            validation {
-                let! name =
-                    KdlValueParser.Collections.nth
-                        0
-                        KdlValueParser.Primitives.str
-                        args
-
-                and! value =
-                    KdlValueParser.Collections.nth
-                        1
-                        KdlValueParser.Primitives.str
-                        args
-
-                return name, value
-            }
-            |> KdlParser.ofValidation
-
-
-        KdlParser.Combinators.childrenNamed "info" keyInfoChildrenParser
-        |> KdlParser.map Map.ofSeq
-
 
     let private instructionStepParser (node: KdlNode) =
         let args = Node.args node
@@ -245,11 +299,10 @@ module Recipe =
                         "tags"
                         (allArgs KdlValueParser.Primitives.str)
                 )
+                |> KdlParser.map (Option.map Set.ofArray)
 
-            and! keyInfo =
-                KdlParser.opt (
-                    KdlParser.Combinators.node "key-info" keyInfoParser
-                )
+            and! duration =
+                KdlParser.Combinators.nodeWith "duration" Duration.parser
 
             and! image =
                 KdlParser.Combinators.nodeWith
@@ -257,24 +310,16 @@ module Recipe =
                     (firstArg KdlValueParser.Primitives.str)
                 |> KdlParser.andThen RecipeImage.ofString
 
-            and! ingredients =
-                KdlParser.Combinators.nodeWith
-                    "ingredients"
-                    Ingredients.ingredientsParser
-
             and! instructions =
-                KdlParser.Combinators.node
+                KdlParser.Combinators.nodeWith
                     "instructions"
-                    (KdlParser.Combinators.childrenNamed
-                        "step"
-                        instructionStepParser)
+                    Instructions.parser
 
             return {
                 Name = name
                 Tags = tags
-                KeyInfo = keyInfo
+                Duration = duration
                 Image = image
-                Ingredients = ingredients
                 Instructions = instructions
             }
         }
