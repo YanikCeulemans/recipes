@@ -13,13 +13,42 @@ open Prelude
 type Duration = Duration of TimeSpan
 
 module Duration =
+    open System.Collections.Generic
     open Parsers
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
+    let rec private parserHelp
+        (acc: TimeSpan)
+        (kvps: KeyValuePair<string, KdlValue> list)
+        =
+        match kvps with
+        | [] -> Ok acc
+        | KeyValue(key, value) :: kvps ->
+            let amount =
+                KdlValueParser.runParser KdlValueParser.Primitives.int32 value
+
+            match key, amount with
+            | _, Error e -> Error e
+            | "minutes", Ok n ->
+                parserHelp (int64 n |> TimeSpan.FromMinutes |> acc.Add) kvps
+            | other, Ok _ -> Error [ $"unsupported duration unit: {other}" ]
+
     let parser _args (properties: Map<string, KdlValue>) : KdlParser<Duration> =
         kdlParser {
-            let! duration = failwith "TODO"
+            let! duration =
+                match List.ofSeq properties with
+                | [] ->
+                    KdlParser.fail
+                        "the duration node requires at least one property"
+                | KeyValue(key, value) :: kvps ->
+                    let n =
+                        KdlValueParser.runParser
+                            KdlValueParser.Primitives.int32
+                            value
+
+                    match key, n with
+                    | "minutes", Ok n -> failwith "TODO"
             // TODO: This map should contain at least one value
             // Map.tryFind "minutes" properties
             // |> Option.bind (
@@ -27,7 +56,7 @@ module Duration =
             // )
             // |> KdlParser.ofValidation
 
-            return failwith "TODO"
+            return failwith "todo"
         }
 
 type IngredientAmount =
