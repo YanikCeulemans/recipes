@@ -13,26 +13,36 @@ open Prelude
 type Duration = Duration of TimeSpan
 
 module Duration =
-    open System.Collections.Generic
     open Parsers
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
-    let rec private parserHelp
-        (acc: TimeSpan)
-        (kvps: KeyValuePair<string, KdlValue> list)
-        =
-        match kvps with
-        | [] -> Ok acc
-        | KeyValue(key, value) :: kvps ->
-            let amount =
-                KdlValueParser.runParser KdlValueParser.Primitives.int32 value
+    module Validation =
+        let traverse
+            (f: 'a -> Validation<'b, 'e>)
+            (xs: 'a seq)
+            : Validation<'b seq, 'e> =
+            let go (acc: Validation<'b list, 'e>) (curr: 'a) =
+                f curr
+                |> Validation.map List.cons
+                |> fun vf -> Validation.apply vf acc
 
-            match key, amount with
-            | _, Error e -> Error e
-            | "minutes", Ok n ->
-                parserHelp (int64 n |> TimeSpan.FromMinutes |> acc.Add) kvps
-            | other, Ok _ -> Error [ $"unsupported duration unit: {other}" ]
+            xs
+            |> Seq.fold go (Validation.ok [])
+            |> Validation.map List.rev
+            |> Validation.map seq
+
+    let private parseDurationAmount
+        (key: string)
+        (value: KdlValue)
+        : Validation<TimeSpan, string> =
+        let parsedValue =
+            KdlValueParser.runParser KdlValueParser.Primitives.int32 value
+
+        match key, parsedValue with
+        | "minutes", Ok n -> Validation.ok (int64 n |> TimeSpan.FromMinutes)
+        | other, _ ->
+            Validation.error $"unsupported duration amount type '{other}'"
 
     let parser _args (properties: Map<string, KdlValue>) : KdlParser<Duration> =
         kdlParser {
@@ -42,21 +52,27 @@ module Duration =
                     KdlParser.fail
                         "the duration node requires at least one property"
                 | KeyValue(key, value) :: kvps ->
-                    let n =
-                        KdlValueParser.runParser
-                            KdlValueParser.Primitives.int32
-                            value
+                    validation {
+                        let! durationAmount = parseDurationAmount key value
 
-                    match key, n with
-                    | "minutes", Ok n -> failwith "TODO"
-            // TODO: This map should contain at least one value
-            // Map.tryFind "minutes" properties
-            // |> Option.bind (
-            //     KdlValueParser.runParser KdlValueParser.Primitives.int32
-            // )
-            // |> KdlParser.ofValidation
+                        let! durationAmounts =
+                            kvps
+                            |> Seq.map (|KeyValue|)
+                            |> Validation.traverse (fun (key, value) ->
+                                parseDurationAmount key value
+                            )
 
-            return failwith "todo"
+                        return
+                            Seq.fold
+                                (fun (acc: TimeSpan) (curr: TimeSpan) ->
+                                    acc.Add curr
+                                )
+                                durationAmount
+                                durationAmounts
+                    }
+                    |> KdlParser.ofValidation
+
+            return Duration duration
         }
 
 type IngredientAmount =
