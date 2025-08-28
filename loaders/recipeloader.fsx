@@ -12,6 +12,8 @@ open Prelude
 
 type Duration = Duration of TimeSpan
 
+let extractDuration (Duration timeSpan) = timeSpan
+
 module Duration =
     open Parsers
     open Parsers.KdlParser.ComputationExpression
@@ -43,6 +45,7 @@ module Duration =
         | "minutes", Ok n -> Validation.ok (int64 n |> TimeSpan.FromMinutes)
         | other, _ ->
             Validation.error $"unsupported duration amount type '{other}'"
+
 
     let parser _args (properties: Map<string, KdlValue>) : KdlParser<Duration> =
         kdlParser {
@@ -266,6 +269,12 @@ module Instructions =
     open Parsers
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
+
+    // TODO: This export works, but extractDuration function does not?!
+    let ingredients (instructions: Instructions) = [
+        for step in instructions.Steps do
+            yield! step.Ingredients
+    ]
 
     let parser
         _args

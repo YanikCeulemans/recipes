@@ -1,11 +1,7 @@
 recipe {
   name "Orzo with olives and feta"
   tags "veggie" "greek" "savory" "pasta" "1-pan-dish"
-
-  key-info {
-    info "Dish" "Dinner"
-    info "Total time" "1 hour"
-  }
+  duration minutes=60
 
   image "/images/recipe-orzo-olives-feta.webp"
 

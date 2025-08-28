@@ -167,29 +167,27 @@ let private ingredientView
 
     ]
 
-let keyInfoView (recipe: Recipeloader.Recipe) = [
-    match recipe.KeyInfo with
-    | None -> ()
-    | Some keyInfo ->
-        nav [ Class "level" ] [
-            for KeyValue(key, value) in keyInfo ->
-                div [ Class "level-item has-text-centered" ] [
-                    div [] [
-                        p [ Class "heading" ] [ !!key ]
-                        p [ Class "title" ] [ !!value ]
-                    ]
-                ]
-        ]
-]
+let durationView (duration: Recipeloader.Duration) =
+    let ts: System.TimeSpan = Recipeloader.extractDuration duration
 
-let tagsView (tags: string array) =
-    match tags with
-    | [||] -> []
-    | _ -> [
-        div [ Class "is-flex is-flex-wrap-wrap is-gap-1" ] [
-            for tag in tags -> span [ Class "tag" ] [ !!tag ]
+    nav [ Class "level" ] [
+        div [ Class "level-item has-text-centered" ] [
+            div [] [
+                p [ Class "heading" ] [ !!"Total duration" ]
+                p [ Class "title" ] [ !!(ts.ToString()) ]
+            ]
         ]
-      ]
+    ]
+
+let tagsView (tags: string Set) =
+    if Set.isEmpty tags then
+        []
+    else
+        [
+            div [ Class "is-flex is-flex-wrap-wrap is-gap-1" ] [
+                for tag in tags -> span [ Class "tag" ] [ !!tag ]
+            ]
+        ]
 
 let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
@@ -240,13 +238,15 @@ let sortIngredients (ingredients: Recipeloader.Ingredient seq) =
 
 let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
+    let serving = recipe.Instructions.Serving
+    let ingredients = Recipeloader.Instructions.ingredients recipe.Instructions
 
     section [ Class "is-clipped" ] [
         div [ Class "has-text-centered block mt-6" ] [
             p [ Class "title" ] [
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
-            yield! keyInfoView recipe
+            durationView recipe.Duration
         ]
         div [ Class "content article-body" ] [
             div [ Class "block" ] [
@@ -273,9 +273,7 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                 div [ Class "column" ] [
                     nav [
                         Class "panel"
-                        XData(
-                            "{" + $"serving: {recipe.Ingredients.Serving}" + "}"
-                        )
+                        XData("{" + $"serving: {serving}" + "}")
                     ] [
                         yield
                             p [ Class "panel-heading m-0" ] [ !!"Ingredients" ]
@@ -301,24 +299,21 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                                     ] [ !!"+" ]
                                 ]
                             ]
-                        for ingredient in
-                            sortIngredients recipe.Ingredients.Ingredients ->
+                        for ingredient in sortIngredients ingredients ->
                             span [ Class "panel-block" ] [
-                                ingredientView
-                                    recipe.Ingredients.Serving
-                                    ingredient
+                                ingredientView serving ingredient
                             ]
                     ]
                 ]
-                match recipe.Instructions with
+                match recipe.Instructions.Steps |> Array.ofSeq with
                 | [||] -> ()
-                | instructions ->
+                | steps ->
                     div [ Class "column" ] [
                         h3 [ Class "is-size-3" ] [ !!"Instructions" ]
                         ol [] [
-                            for instruction in instructions ->
+                            for step in steps ->
                                 li [ Class "my-5" ] [
-                                    span [] [ !!instruction ]
+                                    span [] [ !!step.Description ]
                                 ]
                         ]
                     ]
