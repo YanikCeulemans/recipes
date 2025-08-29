@@ -139,13 +139,19 @@ module KdlParser =
             (parser: KdlNode -> KdlParser<'a>)
             : KdlParser<'a array> =
             fun doc ->
+                printfn
+                    "children named %s: %A"
+                    name
+                    (doc.Nodes |> Seq.map (fun n -> n.Identifier))
+
                 docNodes doc
                 |> Option.defaultValue Seq.empty
                 |> Seq.filter (fun node -> node.Identifier = name)
-                |> Seq.map parser
+                |> Seq.map (fun node -> runParser (parser node) node.Children)
                 |> Array.ofSeq
-                |> sequenceA
-                |> fun parser -> runParser parser doc
+                |> Prelude.Validation.traverse id
+                |> Validation.map Array.ofSeq
+                |> fun vs -> ofValidation vs doc
 
     module ComputationExpression =
         type KdlNodesParserBuilder() =

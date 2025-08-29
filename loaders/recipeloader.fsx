@@ -19,21 +19,6 @@ module Duration =
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
-    module Validation =
-        let traverse
-            (f: 'a -> Validation<'b, 'e>)
-            (xs: 'a seq)
-            : Validation<'b seq, 'e> =
-            let go (acc: Validation<'b list, 'e>) (curr: 'a) =
-                f curr
-                |> Validation.map List.cons
-                |> fun vf -> Validation.apply vf acc
-
-            xs
-            |> Seq.fold go (Validation.ok [])
-            |> Validation.map List.rev
-            |> Validation.map seq
-
     let private parseDurationAmount
         (key: string)
         (value: KdlValue)
@@ -168,42 +153,6 @@ module Ingredient =
                 Name = name
                 Amount = ingredientAmount
                 Variant = variant
-            }
-        }
-
-type Ingredients = {
-    Serving: int
-    Ingredients: Set<Ingredient>
-}
-
-module Ingredients =
-    open Parsers
-    open Parsers.KdlParser.ComputationExpression
-    open FsToolkit.ErrorHandling
-
-    let ingredientsParser
-        (_args: KdlValue array)
-        (properties: Map<string, KdlValue>)
-        : KdlParser<Ingredients> =
-        kdlParser {
-            let! serving =
-                Map.tryFind "serving" properties
-                |> Result.requireSome [
-                    "expected to find the required 'serving' property, but found none"
-                ]
-                |> Result.bind (
-                    KdlValueParser.runParser KdlValueParser.Primitives.int32
-                )
-                |> KdlParser.ofValidation
-
-            and! ingredients =
-                KdlParser.Combinators.childrenNamed
-                    "ingredient"
-                    Ingredient.ingredientParser
-
-            return {
-                Serving = serving
-                Ingredients = Set.ofArray ingredients
             }
         }
 
