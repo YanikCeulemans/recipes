@@ -5,59 +5,70 @@ recipe {
 
   image "/images/recipe-orzo-olives-feta.webp"
 
-  ingredients serving=2 {
-    ingredient "olive oil" {
-      amount 3 "tbsp"
+  instructions serving=2 {
+    step "Peel and dice the eggplants" {
+      ingredient "eggplant" {
+        amount 2
+      }
     }
-    ingredient "orzo" {
-      amount 300 "g"
+    step "Dice the bell peppers" {
+      ingredient "bell pepper" {
+        amount 2
+      }
     }
-    ingredient "shallots" {
-      amount 2
+    step "Heat up the olive oil in a large skillet" {
+      ingredient "olive oil" {
+        amount 3 "tbsp"
+      }
     }
-    ingredient "garlic" {
-      amount 1 "clove"
-    }
-    ingredient "bell pepper" {
-      amount 2
-    }
-    ingredient "eggplant" {
-      amount 2
-    }
-    ingredient "olives" {
-      amount 200 "g"
-    }
-    ingredient "feta" {
-      amount 200 "g"
-    }
-    ingredient "panko" "breadcrumbs" {
-      amount 140 "g"
-    }
-    ingredient "salt" {
-      to-taste
-    }
-    ingredient "pepper" {
-      to-taste
-    }
-    ingredient "mediterranean herbs" {
-      to-taste
-    }
-  }
-
-  instructions {
-    step "Peel and dice the eggplants"
-    step "Dice the bell peppers"
-    step "Heat up the olive oil in a large skillet"
     step "Fry the eggplants on low-medium heat with the lid on"
-    step "Peel and slice the shallots in half rings. Peel dice and crush the garlic"
+    step "Peel and slice the shallots in half rings. Peel dice and crush the garlic" {
+      ingredient "garlic" {
+        amount 1 "clove"
+      }
+      ingredient "shallots" {
+        amount 2
+      }
+    }
     step "Add the diced bell peppers and crushed garlic to the eggplants and stir. Let the veggies simmer on low heat for a couple of minutes"
-    step "Bring 3:1 water:orzo to a boil, add some salt and cook the orzo al dente in about 10 minutes"
+    step "Bring 3:1 water:orzo to a boil, add some salt and cook the orzo al dente in about 10 minutes" {
+      ingredient "orzo" {
+        amount 300 "g"
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
     step "Add the sliced shallots to the veggies and stir"
-    step "Season the veggies using salt, pepper and the mediterranean herbs to taste"
-    step "Dice the olives roughly, add them to the veggies and stir"
+    step "Season the veggies using salt, pepper and the mediterranean herbs to taste" {
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "mediterranean herbs" {
+        to-taste
+      }
+    }
+    step "Dice the olives roughly, add them to the veggies and stir" {
+      ingredient "olives" {
+        amount 200 "g"
+      }
+    }
     step "Drain the orzo and rinse with cold water to stop the cooking process"
     step "Add the orzo to the veggies"
-    step "Finely dice the feta cheese, add the panko, some olive oil and mix"
+    step "Finely dice the feta cheese, add the panko, some olive oil and mix" {
+      ingredient "feta" {
+        amount 200 "g"
+      }
+      ingredient "panko" "breadcrumbs" {
+        amount 140 "g"
+      }
+      ingredient "olive oil" {
+        to-taste
+      }
+    }
     step "Add the feta to the veggies and pasta and stir"
   }
 }

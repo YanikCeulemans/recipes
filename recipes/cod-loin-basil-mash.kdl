@@ -1,63 +1,92 @@
 recipe {
   name "Cod loin with basil mash"
   tags "savory" "fish" "easy"
-
-  key-info {
-    info "Total time" "45 mins"
-  }
+  duration minutes=45
 
   image "/images/recipe-cod-loin-basil-mash.webp"
 
-  ingredients serving=4 {
-    ingredient "fresh cod loin" {
-      amount 800 "g"
-    }
-    ingredient "potatoes" {
-      amount 800 "g"
-    }
-    ingredient "vine tomatoes" {
-      amount 400 "g"
-    }
-    ingredient "garlic" {
-      amount 2 "cloves"
-    }
-    ingredient "basil" {
-      amount 2 "bunches"
-    }
-    ingredient "butter" {
-      amount 50 "g"
-    }
-    ingredient "pine nuts" {
-      amount 100 "g"
-    }
-    ingredient "olive oil" {
-      amount 4 "tbsp"
-    }
-    ingredient "fish seasoning" {
-      to-taste
-    }
-    ingredient "milk" {
-      to-taste
-    }
-    ingredient "olive oil" {
-      to-taste
-    }
-    ingredient "pepper" {
-      to-taste
-    }
-    ingredient "salt" {
-      to-taste
-    }
-  }
-
-  instructions {
+  instructions serving=4 {
     step "Preheat the oven to 180°C."
-    step "Place the cod loins in an ovenproof dish and season with salt, pepper, and optional fish seasoning. Bake for 20 minutes."
-    step "Place the vine tomatoes in an ovenproof dish, crush 1 clove of garlic and add to the dish. Drizzle with olive oil and season with salt and pepper. Put the dish in the oven for 15 minutes along with the fish."
-    step "Peel the potatoes and cut them into cubes."
-    step "Boil them in lightly salted water. Drain and mash them with a bit of milk, a knob of butter, pepper, and salt."
-    setp "Blend the basil with a finely chopped clove of garlic, a bit of salt, pepper, and basil oil."
-    step "Fold the basil mix into the mashed potatoes and season to taste with extra salt and pepper if needed."
-    step "Spoon the basil mash into a deep plate, serve the cod on top, add the vine tomatoes and finish with the pine nuts."
+    step "Place the cod loins in an ovenproof dish and season with salt, pepper, and optional fish seasoning. Bake for 20 minutes." {
+      ingredient "fresh cod loin" {
+        amount 800 "g"
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "fish seasoning" {
+        to-taste
+      }
+    }
+    step "Place the vine tomatoes in an ovenproof dish, crush 1 clove of garlic and add to the dish. Drizzle with olive oil and season with salt and pepper. Put the dish in the oven for 15 minutes along with the fish." {
+      ingredient "vine tomatoes" {
+        amount 400 "g"
+      }
+      ingredient "garlic" {
+        amount 1 "cloves"
+      }
+      ingredient "olive oil" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
+    step "Peel the potatoes and cut them into cubes." {
+      ingredient "potatoes" {
+        amount 800 "g"
+      }
+    }
+    step "Boil them in lightly salted water. Drain and mash them with a bit of milk, a knob of butter, pepper, and salt." {
+      ingredient "milk" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "butter" {
+        amount 50 "g"
+      }
+    }
+    setp "Blend the basil with a finely chopped clove of garlic, a bit of salt, pepper, and olive oil." {
+      ingredient "basil" {
+        amount 2 "bunches"
+      }
+      ingredient "garlic" {
+        amount 1 "cloves"
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "olive oil" {
+        to-taste
+      }
+    }
+    step "Fold the basil mix into the mashed potatoes and season to taste with extra salt and pepper if needed." {
+
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
+    step "Spoon the basil mash into a deep plate, serve the cod on top, add the vine tomatoes and finish with the pine nuts." {
+      ingredient "pine nuts" {
+        amount 100 "g"
+      }
+    }
   }
 }
