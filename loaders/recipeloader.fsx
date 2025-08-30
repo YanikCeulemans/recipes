@@ -81,6 +81,20 @@ module IngredientAmount =
         | Pieces n -> Some($"(%s{scaling}) * %d{n}", n), ""
         | OtherIngredientUnit(n, u) -> Some($"(%s{scaling}) * %d{n}", n), u
 
+    let append
+        (amountA: IngredientAmount)
+        (amountB: IngredientAmount)
+        : IngredientAmount option =
+        match amountA, amountB with
+        | ToTaste, ToTaste -> Some ToTaste
+
+        | Pieces nA, Pieces nB -> Some(Pieces(nA + nB))
+
+        | OtherIngredientUnit(nA, uA), OtherIngredientUnit(nB, uB) when uA = uB ->
+            Some(OtherIngredientUnit(nA + nB, uA))
+
+        | otherA, otherB -> None
+
 type Ingredient = {
     Name: string
     Amount: IngredientAmount
@@ -219,11 +233,29 @@ module Instructions =
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
-    // TODO: This function should join ingredients with the same name
-    let ingredients (instructions: Instructions) = [
-        for step in instructions.Steps do
-            yield! step.Ingredients
-    ]
+    let ingredients (instructions: Instructions) =
+        let rec go (acc: Ingredient list) (ingredient: Ingredient) =
+            let existing =
+                List.indexed acc
+                |> List.tryFind (fun (i, innerIngredient) ->
+                    innerIngredient.Name = ingredient.Name
+                )
+
+            match existing with
+            | None -> ingredient :: acc
+            | Some(i, fi) ->
+                match IngredientAmount.append fi.Amount ingredient.Amount with
+                | Some updatedAmount ->
+                    let updatedIngredient = { fi with Amount = updatedAmount }
+
+                    List.updateAt i updatedIngredient acc
+                | None -> ingredient :: acc
+
+        [
+            for step in instructions.Steps do
+                yield! step.Ingredients
+        ]
+        |> List.fold go []
 
     let parser
         _args
