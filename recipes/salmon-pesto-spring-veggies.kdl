@@ -41,7 +41,7 @@ recipe {
       }
     }
     step "Season the salmon fillets with salt and pepper and spread a spoonful of pesto on them. Sprinkle the panko and parmsan mix over the fillets." {
-      ingredient "salmon trout fillets" {
+      ingredient "salmon trout fillet" {
         amount 4
       }
       ingredient "pepper" {
