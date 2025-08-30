@@ -21,6 +21,14 @@ recipe {
         amount 1
       }
     }
+    step "Cook the pasta al dente in lightly salted water." {
+      ingredient "pasta" "whichever works" {
+        amount 400 "g"
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
     step "Heat the olive oil in a pot and sauté the onion and broccoli." {
       ingredient "olive oil" {
         amount 2 "tbsp"
@@ -30,19 +38,11 @@ recipe {
       ingredient "cream" {
         amount 300 "ml"
       }
-      ingredient "vegetable stock cubes" {
+      ingredient "vegetable stock cube" {
         amount 2
       }
     }
     step "Let it simmer for 7 minutes on a low heat."
-    step "Cook the pasta al dente in lightly salted water." {
-      ingredient "pasta" "whichever works" {
-        amount 400 "g"
-      }
-      ingredient "salt" {
-        to-taste
-      }
-    }
     step "Stir the herb cheese into the sauce. Season with salt and pepper." {
       ingredient "herb cheese" {
         amount 200 "g"

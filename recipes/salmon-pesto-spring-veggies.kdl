@@ -7,7 +7,7 @@ recipe {
 
   instructions serving=4 {
     step "Preheat the oven to 180°C. Scrub the baby potatoes clean and cook them until tender in lightly salted water in about 20 minutes." {
-      ingredient "baby potatoes" "small ones" {
+      ingredient "baby potato" "small ones" {
         amount 500 "g"
       }
       ingredient "salt" {

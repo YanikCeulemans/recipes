@@ -256,6 +256,7 @@ module Instructions =
                 yield! step.Ingredients
         ]
         |> List.fold go []
+        |> List.rev
 
     let parser
         _args

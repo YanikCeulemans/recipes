@@ -22,7 +22,7 @@ recipe {
       }
     }
     step "Place the vine tomatoes in an ovenproof dish, crush 1 clove of garlic and add to the dish. Drizzle with olive oil and season with salt and pepper. Put the dish in the oven for 15 minutes along with the fish." {
-      ingredient "vine tomatoes" {
+      ingredient "vine tomato" {
         amount 400 "g"
       }
       ingredient "garlic" {
@@ -39,7 +39,7 @@ recipe {
       }
     }
     step "Peel the potatoes and cut them into cubes." {
-      ingredient "potatoes" {
+      ingredient "potato" {
         amount 800 "g"
       }
     }

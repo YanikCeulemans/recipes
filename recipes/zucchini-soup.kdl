@@ -28,7 +28,7 @@ recipe {
       }
     }
     step "Peel and dice the onion roughly" {
-      ingredient "onions" {
+      ingredient "onion" {
         amount 1
       }
     }

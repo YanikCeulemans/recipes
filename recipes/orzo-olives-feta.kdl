@@ -26,7 +26,7 @@ recipe {
       ingredient "garlic" {
         amount 1 "clove"
       }
-      ingredient "shallots" {
+      ingredient "shallot" {
         amount 2
       }
     }
