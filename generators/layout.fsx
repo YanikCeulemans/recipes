@@ -169,14 +169,21 @@ let private ingredientView
 
     ]
 
-let durationView (duration: Recipeloader.Duration) =
-    let ts: System.TimeSpan = Recipeloader.extractDuration duration
+let formatDuration (duration: Recipeloader.Duration) =
+    match Recipeloader.Duration.extract duration with
+    | LessThanAMinute secs when secs = 1 -> "One second"
+    | LessThanAMinute secs -> $"{secs} seconds"
+    | LessThanAnHour mins when mins = 1 -> "One minute"
+    | LessThanAnHour mins -> $"{mins} minutes"
+    | other when other.TotalHours = 1 -> "One hour"
+    | other -> $"{other.TotalHours} hours"
 
+let durationView (duration: Recipeloader.Duration) =
     nav [ Class "level" ] [
         div [ Class "level-item has-text-centered" ] [
             div [] [
                 p [ Class "heading" ] [ !!"Total duration" ]
-                p [ Class "title" ] [ !!(ts.ToString()) ]
+                p [ Class "title" ] [ !!(formatDuration duration) ]
             ]
         ]
     ]
@@ -231,7 +238,14 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
             h3 [ Class "scaling-size-3 has-text-centered block is-flex-grow-1" ] [
                 a [ Href recipeEnvelope.Link ] [ !!recipe.Name ]
             ]
-            yield! recipe.Tags |> Option.map tagsView |> Option.defaultValue []
+            div [ Class "is-flex is-flex-direction-column is-gap-1" ] [
+                span [ Class "icon-text" ] [
+                    span [ Class "icon" ] [ i [ Class "fas fa-stopwatch" ] [] ]
+                    span [] [ !!(formatDuration recipe.Duration) ]
+                ]
+                yield!
+                    recipe.Tags |> Option.map tagsView |> Option.defaultValue []
+            ]
         ]
     ]
 

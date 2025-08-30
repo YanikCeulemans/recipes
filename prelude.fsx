@@ -93,6 +93,16 @@ module ActivePatterns =
         | Uri uri when not uri.IsFile -> Some uri
         | _ -> None
 
+    let (|LessThanAMinute|_|) (ts: TimeSpan) =
+        match ts.TotalSeconds with
+        | secs when secs < 60 -> Some secs
+        | _ -> None
+
+    let (|LessThanAnHour|_|) (ts: TimeSpan) =
+        match ts.TotalMinutes with
+        | mins when mins < 60 -> Some mins
+        | _ -> None
+
 module Validation =
     open FsToolkit.ErrorHandling
 

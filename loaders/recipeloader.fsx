@@ -10,16 +10,16 @@ open System.IO
 open Kadlet
 open Prelude
 
-type Duration = Duration of TimeSpan
-
-let extractDuration (Duration timeSpan) = timeSpan
+type Duration = MkDuration of TimeSpan
 
 module Duration =
     open Parsers
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
-    let private parseDurationAmount
+    let extract (MkDuration duration) = duration
+
+    let parseDurationAmount
         (key: string)
         (value: KdlValue)
         : Validation<TimeSpan, string> =
@@ -60,7 +60,7 @@ module Duration =
                     }
                     |> KdlParser.ofValidation
 
-            return Duration duration
+            return MkDuration duration
         }
 
 type IngredientAmount =
