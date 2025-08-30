@@ -212,7 +212,7 @@ module Step =
             }
         }
 
-type Instructions = { Serving: int; Steps: Step Set }
+type Instructions = { Serving: int; Steps: Step array }
 
 module Instructions =
     open Parsers
@@ -240,9 +240,7 @@ module Instructions =
                 )
                 |> KdlParser.ofValidation
 
-            and! steps =
-                KdlParser.Combinators.childrenNamed "step" Step.parser
-                |> KdlParser.map Set.ofArray
+            and! steps = KdlParser.Combinators.childrenNamed "step" Step.parser
 
             return { Serving = serving; Steps = steps }
         }

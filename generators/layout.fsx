@@ -9,6 +9,8 @@
 open Prelude
 open Html
 
+let classes cs = String.concat " " cs |> Class
+
 let injectWebsocketCode (webpage: string) =
     let websocketScript =
         """
@@ -236,6 +238,58 @@ let recipeSummary (recipeEnvelope: Recipeloader.RecipeEnvelope) =
 let sortIngredients (ingredients: Recipeloader.Ingredient seq) =
     ingredients |> Seq.sortBy Recipeloader.Ingredient.isToTaste
 
+let private ingredientsView
+    props
+    servingAmount
+    (ingredients: Recipeloader.Ingredient seq)
+    =
+    if Seq.isEmpty ingredients then
+        []
+    else
+        [
+            span props [
+                for ingredient in ingredients do
+                    ingredientView servingAmount ingredient
+            ]
+        ]
+
+let stepsView servingAmount (steps: Recipeloader.Step seq) =
+    if Seq.isEmpty steps then
+        []
+    else
+        [
+            div [ Class "column" ] [
+                h3 [ Class "is-size-3" ] [ !!"Instructions" ]
+                ol [] [
+                    for step in steps ->
+                        li [ Class "my-5" ] [
+                            div [
+                                Class
+                                    "is-flex is-flex-direction-column is-gap-1"
+                            ] [
+                                yield!
+                                    ingredientsView
+                                        [
+                                            classes [
+                                                "is-flex"
+                                                "is-flex-direction-row"
+                                                "is-flex-wrap-wrap"
+                                                "has-text-grey"
+                                                "is-size-6"
+                                                "is-column-gap-2"
+                                            ]
+                                        ]
+                                        servingAmount
+                                        step.Ingredients
+                                span [ Class "is-size-5" ] [
+                                    !!step.Description
+                                ]
+                            ]
+                        ]
+                ]
+            ]
+        ]
+
 let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
     let recipe = recipeEnvelope.Recipe
     let serving = recipe.Instructions.Serving
@@ -305,18 +359,10 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                             ]
                     ]
                 ]
-                match recipe.Instructions.Steps |> Array.ofSeq with
-                | [||] -> ()
-                | steps ->
-                    div [ Class "column" ] [
-                        h3 [ Class "is-size-3" ] [ !!"Instructions" ]
-                        ol [] [
-                            for step in steps ->
-                                li [ Class "my-5" ] [
-                                    span [] [ !!step.Description ]
-                                ]
-                        ]
-                    ]
+                yield!
+                    stepsView
+                        recipe.Instructions.Serving
+                        recipe.Instructions.Steps
             ]
         ]
     ]
