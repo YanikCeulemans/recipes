@@ -1,69 +1,76 @@
 recipe {
   name "Salmon trout with pesto parmesan crust and spring vegetables"
   tags "savory" "fish" "greens" "olives" "intermediate"
-
-  key-info {
-    info "Total time" "1 hour"
-  }
+  duration minutes=60
 
   image "/images/recipe-salmon-pesto-spring-veggies.webp"
 
-  ingredients serving=4 {
-    ingredient "salmon trout fillets" {
-      amount 4
+  instructions serving=4 {
+    step "Preheat the oven to 180°C. Scrub the baby potatoes clean and cook them until tender in lightly salted water in about 20 minutes." {
+      ingredient "baby potato" "small ones" {
+        amount 500 "g"
+      }
+      ingredient "salt" {
+        to-taste
+      }
     }
-    ingredient "baby potatoes" "small ones" {
-      amount 500 "g"
+    step "Clean the green beans and blanch them in lightly salted water. Add the broad beans for the last minute." {
+      ingredient "green beans" {
+        amount 500 "g"
+      }
+      ingredient "broad beans" "frozen" {
+        amount 250 "g"
+      }
     }
-    ingredient "shallot" {
-      amount 1
+    step "Toast the hazelnuts in a dry pan and chop them coarsely." {
+      ingredient "hazelnuts" {
+        amount 2 "tbsp"
+      }
     }
-    ingredient "green beans" {
-      amount 500 "g"
+    step "Chop the olives coarsely." {
+      ingredient "green olives" {
+        amount 4 "tbsp"
+      }
     }
-    ingredient "broad beans" "frozen" {
-      amount 250 "g"
+    step "Mix the panko with the parmesan" {
+      ingredient "panko" "bread crumbs" {
+        amount 3 "tbsp"
+      }
+      ingredient "grated parmesan cheese" {
+        amount 3 "tbsp"
+      }
     }
-    ingredient "lemon" "zest and juice" {
-      amount 1
+    step "Season the salmon fillets with salt and pepper and spread a spoonful of pesto on them. Sprinkle the panko and parmsan mix over the fillets." {
+      ingredient "salmon trout fillets" {
+        amount 4
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pesto" "ready-made" {
+        amount 185 "g"
+      }
     }
-    ingredient "green olives" {
-      amount 4 "tbsp"
-    }
-    ingredient "hazelnuts" {
-      amount 2 "tbsp"
-    }
-    ingredient "pesto" "ready-made" {
-      amount 185 "g"
-    }
-    ingredient "grated parmesan cheese" {
-      amount 3 "tbsp"
-    }
-    ingredient "panko" "bread crumbs" {
-      amount 3 "tbsp"
-    }
-    ingredient "olive oil" {
-      to-taste
-    }
-    ingredient "pepper" {
-      to-taste
-    }
-    ingredient "salt" {
-      to-taste
-    }
-  }
-
-
-  instructions {
-    step "Preheat the oven to 180°C. Scrub the baby potatoes clean and cook them until tender in lightly salted water in about 20 minutes."
-    step "Clean the green beans and blanch them in lightly salted water. Add the broad beans for the last minute."
-    step "Toast the hazelnuts in a dry pan and chop them coarsely."
-    step "Chop the olives coarsely."
-    step "Mix the panko with the parmesan"
-    step "Season the salmon fillets with salt and pepper and spread a spoonful of pesto on them. Sprinkle the panko and parmsan mix over the fillets."
     step "Bake the fish in the oven for 15 minutes."
-    step "Peel and mince the shallot. Drain both types of beans and the potatoes and let the moisture evaporate."
-    step "Heat olive oil in a pan and sauté the shallot. Add the baby potatoes, both types of beans, and the olives. Also add the lemon juice, grated lemon zest and hazelnuts. Season everything with salt and pepper."
+    step "Peel and mince the shallot. Drain both types of beans and the potatoes and let the moisture evaporate." {
+      ingredient "shallot" {
+        amount 1
+      }
+    }
+    step "Heat olive oil in a pan and sauté the shallot. Add the baby potatoes, both types of beans, the olives and the hazelnuts. Season everything with salt and pepper." {
+      ingredient "olive oil" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
     step "Serve the crusted salmon with the potato and green bean mix."
   }
 }

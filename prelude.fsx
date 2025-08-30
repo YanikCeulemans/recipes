@@ -1,3 +1,5 @@
+#r "nuget: FsToolkit.ErrorHandling, 4.18.0,usepackagetargets=true"
+
 let flip f a b = f b a
 let always x _ = x
 
@@ -90,3 +92,30 @@ module ActivePatterns =
         function
         | Uri uri when not uri.IsFile -> Some uri
         | _ -> None
+
+    let (|LessThanAMinute|_|) (ts: TimeSpan) =
+        match ts.TotalSeconds with
+        | secs when secs < 60 -> Some secs
+        | _ -> None
+
+    let (|LessThanAnHour|_|) (ts: TimeSpan) =
+        match ts.TotalMinutes with
+        | mins when mins < 60 -> Some mins
+        | _ -> None
+
+module Validation =
+    open FsToolkit.ErrorHandling
+
+    let traverse
+        (f: 'a -> Validation<'b, 'e>)
+        (xs: 'a seq)
+        : Validation<'b seq, 'e> =
+        let go (acc: Validation<'b list, 'e>) (curr: 'a) =
+            f curr
+            |> Validation.map List.cons
+            |> fun vf -> Validation.apply vf acc
+
+        xs
+        |> Seq.fold go (Validation.ok [])
+        |> Validation.map List.rev
+        |> Validation.map seq

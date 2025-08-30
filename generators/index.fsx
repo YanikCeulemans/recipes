@@ -30,7 +30,7 @@ let generate' (ctx: SiteContents) =
                                     HtmlProperties.Custom("x-data", "")
                                     HtmlProperties.Custom(
                                         "x-show",
-                                        $"!$store.search || '{recipe.Recipe.Name}'.includes($store.search)"
+                                        $"!$store.search || '{recipe.Recipe.Name.ToLowerInvariant()}'.includes($store.search.toLowerCase())"
                                     )
                                 ] [ Layout.recipeSummary recipe ]
                         ]

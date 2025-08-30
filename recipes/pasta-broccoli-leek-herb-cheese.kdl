@@ -1,55 +1,59 @@
 recipe {
   name "Pasta with broccoli, leek, and herb cheese"
   tags "veggie" "italian" "pasta" "easy" "1-pan-dish" "savory" "greens"
-
-  key-info {
-    info "Total time" "30 mins"
-  }
+  duration minutes=30
 
   image "/images/recipe-pasta-broccoli-leek-herb-cheese.webp"
 
-  ingredients serving=4 {
-    ingredient "pasta" "whichever works" {
-      amount 400 "g"
+  instructions serving=4 {
+    step "Clean the broccoli and cut it into small florets." {
+      ingredient "broccoli" {
+        amount 1
+      }
     }
-    ingredient "young leek" {
-      amount 2
+    step "Clean the leeks and slice them into rings." {
+      ingredient "young leek" {
+        amount 2
+      }
     }
-    ingredient "broccoli" {
-      amount 1
+    step "Peel and chop the onion." {
+      ingredient "onion" {
+        amount 1
+      }
     }
-    ingredient "onion" {
-      amount 1
+    step "Cook the pasta al dente in lightly salted water." {
+      ingredient "pasta" "whichever works" {
+        amount 400 "g"
+      }
+      ingredient "salt" {
+        to-taste
+      }
     }
-    ingredient "herb cheese" {
-      amount 200 "g"
+    step "Heat the olive oil in a pot and sauté the onion and broccoli." {
+      ingredient "olive oil" {
+        amount 2 "tbsp"
+      }
     }
-    ingredient "cream" {
-      amount 300 "ml"
+    step "Add the cream, leek, and stock cubes." {
+      ingredient "cream" {
+        amount 300 "ml"
+      }
+      ingredient "vegetable stock cube" {
+        amount 2
+      }
     }
-    ingredient "vegetable stock cubes" {
-      amount 2
-    }
-    ingredient "olive oil" {
-      amount 2 "tbsp"
-    }
-    ingredient "pepper" {
-      to-taste
-    }
-    ingredient "salt" {
-      to-taste
-    }
-  }
-
-  instructions {
-    step "Clean the broccoli and cut it into small florets."
-    step "Clean the leeks and slice them into rings."
-    step "Peel and chop the onion."
-    step "Heat the olive oil in a pot and sauté the onion and broccoli."
-    step "Add the cream, leek, and stock cubes."
     step "Let it simmer for 7 minutes on a low heat."
-    step "Cook the pasta al dente in lightly salted water."
-    step "Stir the herb cheese into the sauce. Season with salt and pepper."
+    step "Stir the herb cheese into the sauce. Season with salt and pepper." {
+      ingredient "herb cheese" {
+        amount 200 "g"
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+    }
     step "Drain the pasta and add it to the pan with sauce and mix well."
   }
 }

@@ -1,66 +1,67 @@
 recipe {
   name "Chili sin carne"
   tags "vegan" "mexican" "spicey" "savory" "tortillas"
-
-  key-info {
-    info "Dish" "Dinner"
-    info "Total time" "45 mins"
-  }
+  duration minutes=45
 
   image "/images/recipe-chili-sin-carne.png"
 
-  ingredients serving=2 {
-    ingredient "butter" {
-      amount 1 "tbsp"
+  instructions serving=2 {
+    step "Dice the onion, dice the bell peppers, dice the garlic and crush it with the flat side of your knife" {
+      ingredient "onion" {
+        amount 1
+      }
+      ingredient "garlic" {
+        amount 1 "clove"
+      }
+      ingredient "bell pepper" {
+        amount 2
+      }
     }
-    ingredient "rice" "basmati" {
-      amount 75 "g"
+    step "Heat up the butter in a large skillet" {
+      ingredient "butter" {
+        amount 1 "tbsp"
+      }
     }
-    ingredient "onion" {
-      amount 1
-    }
-    ingredient "garlic" {
-      amount 1 "clove"
-    }
-    ingredient "bell pepper" {
-      amount 2
-    }
-    ingredient "kidney beans" {
-      amount 240 "g"
-    }
-    ingredient "corn" {
-      amount 140 "g"
-    }
-    ingredient "tomato paste" {
-      amount 140 "g"
-    }
-    ingredient "tortillas" "whole wheat, medium" {
-      amount 8
-    }
-    ingredient "vegetable broth" {
-      amount 150 "ml"
-    }
-    ingredient "pepper" "harisa if you like spicey" {
-      to-taste
-    }
-  }
-
-  instructions {
-    step "Dice the onion, dice the bell peppers, dice the garlic and crush it with the flat side of your knife"
-    step "Heat up the butter in a large skillet"
-    step "Fry the diced onion until translucent"
+    step "Sauté the diced onion until translucent"
     step "Add the diced bell peppers and crushed garlic to the onions and stir for a couple of minutes"
-    step "Prepare the vegetable stock in a small pot"
-    step "Drain the kidney beans and rinse them under the tap"
-    step "Add the tomato paste and pepper to the chili and stir for 2 minutes"
-    step "Boil around 3:1 water:rice and cook the rice for 11 minutes"
+    step "Prepare the vegetable broth in a small pot" {
+      ingredient "vegetable broth" {
+        amount 150 "ml"
+      }
+    }
+    step "Drain the kidney beans and rinse them under the tap" {
+      ingredient "kidney beans" {
+        amount 240 "g"
+      }
+    }
+    step "Add the tomato paste and pepper to the chili and stir for 2 minutes" {
+      ingredient "tomato paste" {
+        amount 140 "g"
+      }
+      ingredient "pepper" "harisa if you like spicey" {
+        to-taste
+      }
+    }
+    step "Boil around 3:1 water:rice and cook the rice for 11 minutes" {
+      ingredient "rice" "basmati" {
+        amount 75 "g"
+      }
+    }
     step "Add the drained kidney beans to the chili and stir"
     step "Add the vegetable stock to the chili"
     step "Let the chili simmer until well cooked, this takes about 15 minutes"
     step "Drain the rice"
     step "Once the chili is well cooked, add the rice"
-    step "Drain and add the corn to the chili"
-    step "Shortly heat up 1 tortilla per person in the microwave at 800W"
+    step "Drain and add the corn to the chili" {
+      ingredient "corn" {
+        amount 140 "g"
+      }
+    }
+    step "Shortly heat up 1 tortilla per person in the microwave at 800W" {
+      ingredient "tortilla" "whole wheat, medium" {
+        amount 8
+      }
+    }
     step "Serve a small portion of chili in the center of the tortilla, and wrap it tight"
   }
 }

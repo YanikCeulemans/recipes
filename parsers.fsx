@@ -71,7 +71,11 @@ module KdlParser =
 
     module Combinators =
         let private docNodes (doc: KdlDocument) =
-            doc.Nodes |> Option.ofObj |> Option.map seq
+            option {
+                let! doc = Option.ofObj doc
+                let! nodes = Option.ofObj doc.Nodes
+                return seq nodes
+            }
 
         let private firstNodeNamed (name: string) (nodes: KdlNode seq) =
             nodes |> Seq.tryFind (fun n -> n.Identifier = name)
@@ -142,10 +146,11 @@ module KdlParser =
                 docNodes doc
                 |> Option.defaultValue Seq.empty
                 |> Seq.filter (fun node -> node.Identifier = name)
-                |> Seq.map parser
+                |> Seq.map (fun node -> runParser (parser node) node.Children)
                 |> Array.ofSeq
-                |> sequenceA
-                |> fun parser -> runParser parser doc
+                |> Prelude.Validation.traverse id
+                |> Validation.map Array.ofSeq
+                |> fun vs -> ofValidation vs doc
 
     module ComputationExpression =
         type KdlNodesParserBuilder() =

@@ -1,57 +1,71 @@
 recipe {
   name "Zucchini soup with chicken"
   tags "savory" "1-pan-dish" "easy"
-
-  key-info {
-    info "Dish" "Dinner"
-    info "Total time" "45 mins"
-  }
+  duration minutes=45
 
   image "/images/recipe-zucchini-soup.webp"
 
-  ingredients serving=4 {
-    ingredient "zucchini" {
-      amount 500 "g"
+  instructions serving=4 {
+    step "Season the chicken with salt and lots of pepper, rub it with olive oil" {
+      ingredient "chicken thigh fillet" "boneless" {
+        amount 4
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "olive oil" {
+        to-taste
+      }
     }
-    ingredient "onions" {
-      amount 1
-    }
-    ingredient "garlic" {
-      amount 1 "clove"
-    }
-    ingredient "potato" "waxy" {
-      amount 1
-    }
-    ingredient "vegetable broth" {
-      amount 750 "ml"
-    }
-    ingredient "chicken thigh fillet" "boneless" {
-      amount 4
-    }
-    ingredient "salt" {
-      to-taste
-    }
-    ingredient "pepper" {
-      to-taste
-    }
-    ingredient "olive oil" {
-      to-taste
-    }
-  }
-
-  instructions {
-    step "Season the chicken with salt and lots of pepper, rub it with olive oil"
     step "Grill the chicken in a grilling pan until cooked and brown"
     step "Slice the chicken and set aside"
-    step "Dice the zucchini in medium sized chunks"
-    step "Peel and dice the onion roughly"
-    step "Peel and dice the garlic rougly"
-    step "Prepare the vegetable broth"
-    step "Heat up some olive oil in a large soup pot and fry the zucchini, onions and garlic on medium heat for about 10 minutes"
-    step "Peel and dice the potato rougly"
+    step "Dice the zucchini in medium sized chunks" {
+      ingredient "zucchini" {
+        amount 500 "g"
+      }
+    }
+    step "Peel and dice the onion roughly" {
+      ingredient "onion" {
+        amount 1
+      }
+    }
+    step "Peel and dice the garlic rougly" {
+      ingredient "garlic" {
+        amount 1 "clove"
+      }
+    }
+    step "Prepare the vegetable broth" {
+      ingredient "vegetable broth" {
+        amount 750 "ml"
+      }
+    }
+    step "Heat up some olive oil in a large soup pot and fry the zucchini, onions and garlic on medium heat for about 10 minutes" {
+      ingredient "olive oil" {
+        to-taste
+      }
+    }
+    step "Peel and dice the potato rougly" {
+      ingredient "potato" "waxy" {
+        amount 1
+      }
+    }
     step "Add the potato and vegetable broth to the soup and let it simmer for about 20 minutes"
-    step "Season the soup with a bit of pepper"
+    step "Season the soup with a bit of pepper" {
+      ingredient "pepper" {
+        to-taste
+      }
+    }
     step "Blend the soup with a hand blender until it is smooth"
-    step "Season the soup to taste with salt and pepper"
+    step "Season the soup to taste with salt and pepper" {
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
   }
 }
