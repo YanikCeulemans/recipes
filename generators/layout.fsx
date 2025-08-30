@@ -323,12 +323,12 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                     ]
                 ]
             ]
-            div [ Class "columns mb-6" ] [
+            div [
+                Class "columns mb-6"
+                XData("{" + $"serving: {serving}" + "}")
+            ] [
                 div [ Class "column" ] [
-                    nav [
-                        Class "panel"
-                        XData("{" + $"serving: {serving}" + "}")
-                    ] [
+                    nav [ Class "panel" ] [
                         yield
                             p [ Class "panel-heading m-0" ] [ !!"Ingredients" ]
                         yield
@@ -341,10 +341,8 @@ let recipeLayout (recipeEnvelope: Recipeloader.RecipeEnvelope) =
                                     ] [ !!"-" ]
                                     span [ Class "level-item is-flex-grow-1" ] [
                                         span [ Class "is-1 is-flex is-gap-1" ] [
-                                            span [ Class "" ] [
-                                                !! $"Serving: "
-                                            ]
-                                            span [ Class ""; XText "serving" ] []
+                                            span [] [ !! $"Serving: " ]
+                                            span [ XText "serving" ] []
                                         ]
                                     ]
                                     button [
