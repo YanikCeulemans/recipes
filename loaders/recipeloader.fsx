@@ -125,7 +125,6 @@ module Ingredient =
         | _ -> KdlParser.fail $"unexpected amount named: %s{node.Identifier}"
 
     let ingredientParser (node: KdlNode) : KdlParser<Ingredient> =
-        printfn "ingredient node %A" node
         let args = Node.args node
 
         kdlParser {
