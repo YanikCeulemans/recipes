@@ -219,7 +219,7 @@ module Instructions =
     open Parsers.KdlParser.ComputationExpression
     open FsToolkit.ErrorHandling
 
-    // TODO: This export works, but extractDuration function does not?!
+    // TODO: This function should join ingredients with the same name
     let ingredients (instructions: Instructions) = [
         for step in instructions.Steps do
             yield! step.Ingredients
