@@ -171,11 +171,11 @@ let private ingredientView
 
 let formatDuration (duration: Recipeloader.Duration) =
     match Recipeloader.Duration.extract duration with
-    | LessThanAMinute secs when secs = 1 -> "One second"
+    | LessThanAMinute secs when secs = 1 -> "1 second"
     | LessThanAMinute secs -> $"{secs} seconds"
-    | LessThanAnHour mins when mins = 1 -> "One minute"
+    | LessThanAnHour mins when mins = 1 -> "1 minute"
     | LessThanAnHour mins -> $"{mins} minutes"
-    | other when other.TotalHours = 1 -> "One hour"
+    | other when other.TotalHours = 1 -> "1 hour"
     | other -> $"{other.TotalHours} hours"
 
 let durationView (duration: Recipeloader.Duration) =
