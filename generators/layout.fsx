@@ -274,13 +274,10 @@ let stepsView servingAmount (steps: Recipeloader.Step seq) =
         [
             div [ Class "column" ] [
                 h3 [ Class "is-size-3" ] [ !!"Instructions" ]
-                ol [] [
-                    for step in steps ->
+                ol [ Class "no-list-style-type" ] [
+                    for (index, step) in Seq.indexed steps ->
                         li [ Class "my-5" ] [
-                            div [
-                                Class
-                                    "is-flex is-flex-direction-column is-gap-1"
-                            ] [
+                            div [ Class "is-gap-1 ingredient-grid" ] [
                                 yield!
                                     ingredientsView
                                         [
@@ -291,10 +288,15 @@ let stepsView servingAmount (steps: Recipeloader.Step seq) =
                                                 "has-text-grey"
                                                 "is-size-6"
                                                 "is-column-gap-2"
+                                                "is-col-start-2"
+                                                "cell"
                                             ]
                                         ]
                                         servingAmount
                                         step.Ingredients
+                                span [ Class "is-size-5" ] [
+                                    !! $"{index + 1}."
+                                ]
                                 span [ Class "is-size-5" ] [
                                     !!step.Description
                                 ]

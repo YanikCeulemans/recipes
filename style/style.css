@@ -14,6 +14,14 @@ html,body {
 .recipe-summaries-container {
   --bulma-grid-column-min: 20rem;
 }
+.content .no-list-style-type:not([type]) {
+  list-style-type: none;
+  margin-inline-start: 0;
+}
+.ingredient-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
 .media-content {
   margin-top: 3rem;
 }
