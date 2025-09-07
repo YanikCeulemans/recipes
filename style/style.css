@@ -13,6 +13,8 @@ html,body {
 }
 .recipe-summaries-container {
   --bulma-grid-column-min: 20rem;
+  --col-count: 1;
+  grid-template-columns: repeat(var(--col-count), minmax(20rem, 1fr));
 }
 .content .no-list-style-type:not([type]) {
   list-style-type: none;
@@ -36,5 +38,15 @@ html,body {
   .article-body {
     line-height: 1.4;
     margin: 0;
+  }
+}
+@media screen and (min-width: 700px) {
+  .recipe-summaries-container {
+    --col-count: 2;
+  }
+}
+@media screen and (min-width: 1215px) {
+  .recipe-summaries-container {
+    --col-count: 3;
   }
 }
