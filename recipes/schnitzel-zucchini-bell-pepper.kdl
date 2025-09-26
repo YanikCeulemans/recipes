@@ -1,0 +1,51 @@
+
+recipe {
+  name "Veggie schnitzel with stewed bell pepper"
+  tags "savory" "veggie"
+  duration minutes=45
+
+  image "/images/recipe-schnitzel-zucchini-bell-pepper.webp"
+
+  instructions serving=4 {
+    step "Clean the zucchini and cut it into slices" {
+      ingredient "zucchini" {
+        amount 1
+      }
+    }
+    step "Clean the bell peppers and cut them into strips" {
+      ingredient "bell pepper" "mixed" {
+        amount 2
+      }
+    }
+    step "Clean and cook the baby potatoes in about 20 minutes" {
+      ingredient "baby potatoes" {
+        amount 2 "bags"
+      }
+    }
+    step "Heat 2 tbsp of margarine in a pan and sauté the zucchini and bell peppers for 3 minutes." {
+      ingredient "margarine" {
+        amount 2 "tbsp"
+      }
+    }
+    step "Press the garlic clove into the pan and sauté for 1 minute." {
+      ingredient "garlic" {
+        amount 1 "clove"
+      }
+    }
+    step "Add the white wine and cook on high heat for 2 minutes." {
+      ingredient "white wine" "or water" {
+        amount 150 "ml"
+      }
+    }
+    step "Cover the pan, turn the heat to low, and stew the vegetables for 10 minutes."
+    step "Heat margarine in a separate frying pan and brown the veggie schnitzels in about 8 minutes, turning them over halfway through." {
+      ingredient "margarine" {
+        amount 1 "tbsp"
+      }
+      ingredient "veggie schnitzels" {
+        amount 4
+      }
+    }
+    step "Serve the schnitzels with the baby potatoes and the stewed vegetables."
+  }
+}
