@@ -3,7 +3,7 @@ recipe {
   tags "vegan" "mexican" "spicey" "savory" "tortillas"
   duration minutes=45
 
-  image "/images/recipe-chili-sin-carne.png"
+  image "/images/recipe-chili-sin-carne.webp"
 
   instructions serving=2 {
     step "Dice the onion, dice the bell peppers, dice the garlic and crush it with the flat side of your knife" {

@@ -1,0 +1,50 @@
+recipe {
+  name "Guacamole chicken wrap"
+  tags "easy" "quick"
+  duration minutes=15
+
+  image "/images/recipe-guacamole-chicken-wrap.webp"
+
+  instructions serving=2 {
+    step "Prepare the guacamole by cutting the avocado carefully in half. There is a large seed at the center of the fruit, which will have to be removed. Slice the avocado halfs in half again and peel the quarters that remain. Mash the avocado with a fork, and add some guacamole spices." {
+      ingredient "avocado" {
+        amount 2
+      }
+      ingredient "guacamole spices" {
+        to-taste
+      }
+    }
+    step "Add some butter to a hot pan and fry the chicken fillet cubes brown" {
+      ingredient "chicken fillet cubes" {
+        amount 500 "g"
+      }
+      ingredient "butter" {
+        to-taste
+      }
+    }
+    step "Dice the tomatos after having removed the core" {
+      ingredient "tomato" {
+        amount 2
+      }
+    }
+    step "Drain the canned corn using a sieve" {
+      ingredient "corn" "canned" {
+        amount 150 "g"
+      }
+    }
+    step "Heat up one wrap per person in the microwave, this should take about 15 seconds" {
+      ingredient "wraps" "medium size" {
+        amount 8
+      }
+    }
+    step "Spread a layer of guacamole onto a heated wrap and spread the sour cream on top" {
+      ingredient "sour cream" {
+        amount 200 "ml"
+      }
+    }
+    step "Add some baked chicken pieces in the middle in a way that will make it easy to close the wrap"
+    step "Add some diced tomatoes"
+    step "Add some corn"
+    step "Close the wrap and make sure the ingredients are packed tight"
+  }
+}
