@@ -57,7 +57,7 @@ recipe {
         amount 50 "g"
       }
     }
-    setp "Blend the basil with a finely chopped clove of garlic, a bit of salt, pepper, and olive oil." {
+    step "Blend the basil with a finely chopped clove of garlic, a bit of salt, pepper, and olive oil." {
       ingredient "basil" {
         amount 2 "bunches"
       }
