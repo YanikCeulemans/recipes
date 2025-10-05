@@ -1,0 +1,43 @@
+recipe {
+  name "Spirelli with tuna tomato sauce"
+  tags "fish" "pasta" "easy"
+  duration minutes=30
+
+  image "/images/recipe-spirelli-tuna.webp"
+
+  instructions serving=2 {
+    step "Dice the onion, dice the garlic and dice the mozzarella" {
+      ingredient "onion" {
+        amount 1
+      }
+      ingredient "garlic" {
+        amount 2 "cloves"
+      }
+      ingredient "mozzarella" {
+        amount 125 "g"
+      }
+    }
+    step "Separate the canned tuna using a fork and save for the sauce" {
+      ingredient "tuna" "canned" {
+        amount 300 "g"
+      }
+    }
+    step "Cook the spirelli al dente (about 10 minutes) in lightly salted water and drain" {
+      ingredient "spirelli" {
+        amount 250 "g"
+      }
+    }
+    step "Heat up a large skillet, add the butter and sauté the onion and garlic" {
+      ingredient "butter" {
+        amount 1 "tbsp"
+      }
+    }
+    step "Add the tomato passata and let it simmer for a couple of minutes" {
+      ingredient "tomato passata" {
+        amount 450 "g"
+      }
+    }
+    step "Add the tuna and mozzarella and stir"
+    step "Add the cooked pasta to the sauce and stir"
+  }
+}

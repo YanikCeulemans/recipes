@@ -1,0 +1,51 @@
+recipe {
+  name "Macaroni and Cheese"
+  tags "comfort-food" "casserole" "pasta"
+  duration minutes=45
+
+  image "/images/recipe-mac-and-cheese.webp"
+
+  instructions serving=4 {
+    step "Cook the macaroni according to package directions; drain and set aside." {
+      ingredient "macaroni" {
+        amount 250 "g"
+      }
+    }
+    step "In a large saucepan, melt butter over low heat; whisk in flour until smooth." {
+      ingredient "butter" "cubed" {
+        amount 32 "g"
+      }
+      ingredient "all-purpose flour" {
+        amount 32 "g"
+      }
+    }
+    step "Whisk in the milk, chicken bouillon, and pepper." {
+      ingredient "milk" {
+        amount 475 "ml"
+      }
+      ingredient "chicken bouillon cube" "crumbled" {
+        amount 1
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+    }
+    step "Bring to a boil; cook and stir for 2 minutes or until thickened. Remove from the heat."
+    step "Stir in 1 cup of cheddar cheese and the ham" {
+      ingredient "shredded cheddar cheese" {
+        amount 1 "cup"
+      }
+      ingredient "cubed fully cooked ham" {
+        amount 200 "g"
+      }
+    }
+    step "Transfer the mixture to a baking dish. Preheat the oven to 200°C with grill if possible."
+    step "Sprinkle the dish with the grated parmesan cheese." {
+      ingredient "grated Parmesan cheese" {
+        to-taste
+      }
+    }
+    step "Bake in the oven, uncovered, until bubbly, 15 minutes."
+    step "Let stand for 5 minutes before serving."
+  }
+}
