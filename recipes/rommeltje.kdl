@@ -1,0 +1,52 @@
+recipe {
+  name "Rommeltje"
+  tags "savory" "pasta-stew" "leftovers" "comfort-food" "autumn"
+  duration minutes=45
+
+  image "/images/recipe-rommeltje.webp"
+
+  instructions serving=6 {
+    step "Dice the onions, cut the bell peppers into pieces, and slice the mushrooms" {
+      ingredient "onion" {
+        amount 4
+      }
+      ingredient "red bell pepper" {
+        amount 2
+      }
+      ingredient "green bell pepper" {
+        amount 2
+      }
+      ingredient "mushroom" {
+        amount 500 "g"
+      }
+    }
+    step "Sauté the diced onion, bell peppers, and sliced mushrooms in butter until tender" {
+      ingredient "butter" {
+        to-taste
+      }
+    }
+    step "Season with pepper" {
+      ingredient "pepper" {
+        to-taste
+      }
+    }
+    step "Brown the ground meat until cooked and add it to the sautéed vegetables" {
+      ingredient "ground meat" {
+        amount 500 "g"
+      }
+    }
+    step "Prepare the hunting sauce mix according to package instructions and add it to the vegetables and meat mixture" {
+      ingredient "hunting sauce mix" {
+        amount 2
+      }
+    }
+    step "Cook the spirelli pasta according to package instructions until al dente" {
+      ingredient "spirelli pasta" "uncooked" {
+        amount 300 "g"
+      }
+    }
+    step "Add the cooked pasta to the stew and stir to combine all ingredients"
+    step "Let the stew simmer briefly to allow flavors to meld"
+    step "Serve hot"
+  }
+}

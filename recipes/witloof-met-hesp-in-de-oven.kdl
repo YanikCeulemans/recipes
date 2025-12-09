@@ -1,0 +1,115 @@
+recipe {
+  name "Endive with Ham in the Oven"
+  tags "savory" "main-course" "belgian" "comfort-food" "bake"
+  duration minutes=90
+
+  image "/images/recipe-witloof-met-hesp-in-de-oven.webp"
+
+  instructions serving=4 {
+    step "Prepare the endive rolls:"
+    step "With the tip of a paring knife, remove the tough core from the bottom of the endive heads. Make a round incision to prevent the leaves from separating."
+    step "Melt a knob of butter in a wide saucepan over medium heat. Arrange the endive heads in the sizzling butter and season them with a pinch of salt, some freshly ground pepper, and freshly grated nutmeg. Optionally, sprinkle a careful pinch of sugar over them." {
+      ingredient "endive" "heads" {
+        amount 8
+      }
+      ingredient "butter" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "nutmeg" {
+        to-taste
+      }
+      ingredient "sugar" "optional" {
+        to-taste
+      }
+    }
+    step "Sear the endive heads briefly, then add water until they are halfway submerged." {
+      ingredient "water" {
+        to-taste
+      }
+    }
+    step "Cut or tear a round piece of parchment paper the size of the pot. Place the paper directly on top of the vegetables and braise the endive until al dente. Pierce an endive head occasionally to check for doneness. Thicker heads will require longer cooking."
+    step "Drain as much cooking liquid as possible from the endive. Squeeze the heads gently. (You want to avoid a watery cheese sauce.) Save the liquid in which the endive was braised!"
+    step "Roll each endive head individually in a thick slice of cooked ham (or several thin slices). Arrange the rolls in a large baking dish." {
+      ingredient "cooked ham" "thick slices, up to 2mm" {
+        amount 8
+      }
+    }
+    step "Prepare the cheese sauce:"
+    step "The base of the sauce is a classic roux. To make it, melt butter in a pot over medium heat and add the flour. Stir the mixture until it dries, being careful not to burn the roux." {
+      ingredient "butter" {
+        amount 40 "g"
+      }
+      ingredient "flour" {
+        amount 40 "g"
+      }
+    }
+    step "As soon as you smell a biscuit-like aroma, pour the reserved endive cooking liquid and the milk into the pot. Continue to stir patiently with a whisk until the sauce thickens. After stirring long enough, you will achieve a smooth, lightly bound béchamel sauce. Let the sauce boil very briefly. Avoid a sauce that is too thick; if it is, add a little extra milk to make it more fluid." {
+      ingredient "milk" "semi-whole" {
+        amount 7 "dl"
+      }
+      ingredient "endive cooking liquid" "reserved" {
+        to-taste
+      }
+    }
+    step "Remove the pot from the heat. Mix the grated cheese into the warm sauce until it has completely melted. Set aside some cheese for finishing." {
+      ingredient "Emmentaler cheese" "grated" {
+        amount 200 "g"
+      }
+    }
+    step "Season the sauce to taste with pepper, salt, and nutmeg. Add a modest dash of lemon juice. A dash of lemon juice works wonders; the acidity gives the sauce more 'depth' and encourages you to keep eating it with even more relish." {
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "nutmeg" {
+        to-taste
+      }
+      ingredient "lemon juice" {
+        to-taste
+      }
+    }
+    step "Preheat the oven grill."
+    step "Pour the warm cheese sauce over the endive rolls until they are almost completely submerged."
+    step "Evenly sprinkle the remaining grated cheese over the baking dish." {
+      ingredient "Emmentaler cheese" "extra, grated" {
+        to-taste
+      }
+    }
+    step "Place the dish under the hot grill for 10 to 15 minutes until a golden-brown crust appears and the sauce bubbles around the edges."
+    step "Peel the potatoes and boil them in salted water until tender." {
+      ingredient "potato" "floury" {
+        amount 1 "kg"
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
+    step "Mash the potatoes finely and add a knob of butter, an egg, and a dash of milk. Stir until you achieve a creamy mash." {
+      ingredient "butter" {
+        to-taste
+      }
+      ingredient "egg" {
+        amount 1
+      }
+      ingredient "milk" {
+        to-taste
+      }
+    }
+    step "Taste and season the mashed potatoes with salt and optionally some freshly grated nutmeg." {
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "nutmeg" "freshly grated, optional" {
+        to-taste
+      }
+    }
+  }
+}

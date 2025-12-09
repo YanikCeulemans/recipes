@@ -163,7 +163,7 @@ let private ingredientView
         span [] [ !! $"{name}: " ]
         match xtext with
         | None -> ()
-        | Some(xtext, amount) -> span [ XText xtext ] [ !! $"%d{amount}" ]
+        | Some(xtext, amount) -> span [ XText xtext ] [ !! $"%f{amount}" ]
 
         span [] [ !!unitText ]
 
@@ -176,6 +176,7 @@ let formatDuration (duration: Recipeloader.Duration) =
     | LessThanAnHour mins when mins = 1 -> "1 minute"
     | LessThanAnHour mins -> $"{mins} minutes"
     | other when other.TotalHours = 1 -> "1 hour"
+    // TODO: This reads 1.3333333333333 hours at the moment
     | other -> $"{other.TotalHours} hours"
 
 let durationView (duration: Recipeloader.Duration) =
@@ -275,7 +276,7 @@ let stepsView servingAmount (steps: Recipeloader.Step seq) =
             div [ Class "column" ] [
                 h3 [ Class "is-size-3" ] [ !!"Instructions" ]
                 ol [ Class "no-list-style-type" ] [
-                    for (index, step) in Seq.indexed steps ->
+                    for index, step in Seq.indexed steps ->
                         li [ Class "my-5" ] [
                             div [ Class "is-gap-1 ingredient-grid" ] [
                                 yield!

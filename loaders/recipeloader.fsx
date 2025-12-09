@@ -66,20 +66,20 @@ module Duration =
 type IngredientAmount =
     | ToTaste
     | Pieces of int
-    | OtherIngredientUnit of int * string
+    | OtherIngredientUnit of float * string
 
 module IngredientAmount =
     let format =
         function
         | ToTaste -> "to taste"
         | Pieces n -> $"%d{n}"
-        | OtherIngredientUnit(n, u) -> $"%d{n} %s{u}"
+        | OtherIngredientUnit(n, u) -> $"%f{n} %s{u}"
 
     let formatWithScaling (scaling: string) amount =
         match amount with
         | ToTaste -> None, "to taste"
-        | Pieces n -> Some($"(%s{scaling}) * %d{n}", n), ""
-        | OtherIngredientUnit(n, u) -> Some($"(%s{scaling}) * %d{n}", n), u
+        | Pieces n -> Some($"(%s{scaling}) * %d{n}", float n), ""
+        | OtherIngredientUnit(n, u) -> Some($"(%s{scaling}) * %f{n}", n), u
 
     let append
         (amountA: IngredientAmount)
@@ -116,12 +116,15 @@ module Ingredient =
         | "amount" ->
             let args = Node.args node
 
+            let amountNumberParser =
+                KdlValueParser.Primitives.float
+                |> KdlValueParser.alt (
+                    KdlValueParser.Primitives.int32 |> KdlValueParser.map float
+                )
+
             validation {
                 let! amount =
-                    KdlValueParser.Collections.nth
-                        0
-                        KdlValueParser.Primitives.int32
-                        args
+                    KdlValueParser.Collections.nth 0 amountNumberParser args
 
                 and! ingredientUnit =
                     KdlValueParser.Collections.nthOpt
@@ -130,7 +133,7 @@ module Ingredient =
                         args
 
                 match ingredientUnit with
-                | None -> return Pieces amount
+                | None -> return Pieces(int amount)
                 | Some ingredientUnit ->
                     return OtherIngredientUnit(amount, ingredientUnit)
             }

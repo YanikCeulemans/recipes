@@ -1,0 +1,95 @@
+recipe {
+  name "Shepherd's Pie"
+  tags "savory" "main-course" "comfort-food" "bake" "make-ahead"
+  duration minutes=80
+
+  image "/images/recipe-shepherds-pie.webp"
+
+  instructions serving=6 {
+    step "Heat olive oil in a large skillet over medium-high heat. Add onion and garlic, cook for 1 minute. Then add carrots. Cook for 3 minutes or until softened and sweet." {
+      ingredient "olive oil" {
+        amount 1.5 "tbsp"
+      }
+      ingredient "garlic" "minced" {
+        amount 2 "cloves"
+      }
+      ingredient "onion" "finely chopped" {
+        amount 1
+      }
+      ingredient "carrot" "finely chopped" {
+        amount 1
+      }
+    }
+    step "Turn heat up to high. Add ground lamb (or beef for Cottage Pie) and cook, breaking it up as you go, until browned." {
+      ingredient "ground lamb" {
+        amount 750 "g"
+      }
+    }
+    step "Add flour and mix in. Add tomato paste, beef stock/broth, red wine, crumbled beef bouillon cube, and Worcestershire sauce. Stir well." {
+      ingredient "plain/all purpose flour" {
+        amount 0.25 "cup"
+      }
+      ingredient "tomato paste" {
+        amount 0.25 "cup"
+      }
+      ingredient "beef stock/broth" {
+        amount 2 "cups"
+      }
+      ingredient "red wine" {
+        amount 0.5 "cup"
+      }
+      ingredient "beef bouillon cube" "crumbled" {
+        amount 1
+      }
+      ingredient "Worcestershire sauce" {
+        amount 1 "tbsp"
+      }
+    }
+    step "Bring to a simmer, then turn down heat so it is simmering rapidly (medium heat recommended). Cook for 30 minutes, stirring occasionally, until it reduces down to a thick gravy."
+    step "Adjust salt and pepper to taste. Transfer the filling to a 1.5-liter / quart pie baking dish. Stir through frozen peas." {
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "frozen peas" {
+        amount 1 "cup"
+      }
+    }
+    step "Preheat oven to 180°C."
+    step "Cook peeled and cubed potatoes in boiling water for 15 minutes or until soft. Drain then return to pot on a turned-off stove. Allow to steam dry for 30 seconds or so." {
+      ingredient "potato" "peeled, cut into 2.5cm cubes" {
+        amount 1.2 "kg"
+      }
+    }
+    step "Add butter and mash until melted, then add milk, salt, and pepper. Mash until it's soft and smooth (spreadable, but not sloppy), adjusting with a touch more milk if required." {
+      ingredient "butter" {
+        amount 2 "tbsp"
+      }
+      ingredient "milk" "whole or low fat" {
+        amount 0.66 "cup"
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+    }
+    step "Spread mash onto the pie, use a fork to draw squiggles over the surface. Sprinkle with parmesan cheese (optional) and drizzle with melted butter." {
+      ingredient "grated parmesan" "optional" {
+        amount 2 "tbsp"
+      }
+      ingredient "butter" "melted" {
+        amount 2 "tbsp"
+      }
+    }
+    step "Bake for 30-40 minutes or until deep golden on top and bubbling on the edges. Stick a knife into the middle to ensure it is piping hot."
+    step "Stand for 5 minutes before serving, garnished with fresh thyme leaves if desired." {
+      ingredient "fresh thyme leaves" "for garnish, optional" {
+        to-taste
+      }
+    }
+  }
+}
