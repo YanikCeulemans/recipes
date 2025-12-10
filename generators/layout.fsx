@@ -94,6 +94,9 @@ let layout (ctx: SiteContents) (layoutConfig: LayoutConfig) bodyCnt =
                 document.addEventListener('alpine:init', () => {
                     Alpine.store('search', '');
                 });
+
+                const numberFormatter = new Intl.NumberFormat("nl-BE", { maximumFractionDigits: 2 });
+                const formatAmount = (amount) => numberFormatter.format(amount);
                 """
             ]
         ]

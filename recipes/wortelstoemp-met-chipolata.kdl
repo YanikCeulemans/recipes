@@ -63,10 +63,6 @@ recipe {
         to-taste
       }
     }
-    step "Serve the carrot mash ('stoemp') and chipolata sausages with a spoonful of tomato ketchup." {
-      ingredient "tomato ketchup" {
-        to-taste
-      }
-    }
+    step "Serve the carrot mash ('stoemp') with chipolata sausages."
   }
 }

@@ -78,8 +78,9 @@ module IngredientAmount =
     let formatWithScaling (scaling: string) amount =
         match amount with
         | ToTaste -> None, "to taste"
-        | Pieces n -> Some($"(%s{scaling}) * %d{n}", float n), ""
-        | OtherIngredientUnit(n, u) -> Some($"(%s{scaling}) * %f{n}", n), u
+        | Pieces n -> Some($"formatAmount((%s{scaling}) * %d{n})", float n), ""
+        | OtherIngredientUnit(n, u) ->
+            Some($"formatAmount((%s{scaling}) * %f{n})", n), u
 
     let append
         (amountA: IngredientAmount)
