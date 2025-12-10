@@ -94,6 +94,9 @@ let layout (ctx: SiteContents) (layoutConfig: LayoutConfig) bodyCnt =
                 document.addEventListener('alpine:init', () => {
                     Alpine.store('search', '');
                 });
+
+                const numberFormatter = new Intl.NumberFormat("nl-BE", { maximumFractionDigits: 2 });
+                const formatAmount = (amount) => numberFormatter.format(amount);
                 """
             ]
         ]
@@ -163,11 +166,14 @@ let private ingredientView
         span [] [ !! $"{name}: " ]
         match xtext with
         | None -> ()
-        | Some(xtext, amount) -> span [ XText xtext ] [ !! $"%d{amount}" ]
+        | Some(xtext, amount) -> span [ XText xtext ] [ !! $"%f{amount}" ]
 
         span [] [ !!unitText ]
 
     ]
+
+let pluralize count singular plural =
+    $"{count} {if count = 1 then singular else plural}"
 
 let formatDuration (duration: Recipeloader.Duration) =
     match Recipeloader.Duration.extract duration with
@@ -176,7 +182,10 @@ let formatDuration (duration: Recipeloader.Duration) =
     | LessThanAnHour mins when mins = 1 -> "1 minute"
     | LessThanAnHour mins -> $"{mins} minutes"
     | other when other.TotalHours = 1 -> "1 hour"
-    | other -> $"{other.TotalHours} hours"
+    | other ->
+        let hours = pluralize other.Hours "hour" "hours"
+        let minutes = pluralize other.Minutes "minute" "minutes"
+        $"{hours} and {minutes}"
 
 let durationView (duration: Recipeloader.Duration) =
     nav [ Class "level" ] [
@@ -275,7 +284,7 @@ let stepsView servingAmount (steps: Recipeloader.Step seq) =
             div [ Class "column" ] [
                 h3 [ Class "is-size-3" ] [ !!"Instructions" ]
                 ol [ Class "no-list-style-type" ] [
-                    for (index, step) in Seq.indexed steps ->
+                    for index, step in Seq.indexed steps ->
                         li [ Class "my-5" ] [
                             div [ Class "is-gap-1 ingredient-grid" ] [
                                 yield!

@@ -3,9 +3,16 @@
   "isRoot": true,
   "tools": {
     "fornax": {
-      "version": "0.16.0-beta002",
+      "version": "0.16.0",
       "commands": [
         "fornax"
+      ],
+      "rollForward": false
+    },
+    "fantomas": {
+      "version": "7.0.5",
+      "commands": [
+        "fantomas"
       ],
       "rollForward": false
     }

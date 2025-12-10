@@ -1,0 +1,68 @@
+recipe {
+  name "Carrot Mash with Chipolata Sausages"
+  tags "savory" "main-course" "comfort-food" "dutch" "belgian"
+  duration minutes=90
+
+  image "/images/recipe-wortelstoemp-met-chipolata.webp"
+
+  instructions serving=2 {
+    step "Peel the potatoes and cut them into large pieces. Peel and finely chop the onion. Peel the carrots and cut them into small pieces." {
+      ingredient "potato" "large pieces" {
+        amount 400 "g"
+      }
+      ingredient "onion" "finely chopped" {
+        amount 1
+      }
+      ingredient "carrot" "small pieces" {
+        amount 300 "g"
+      }
+    }
+    step "Melt a knob of butter in a large cooking pot and sauté the onion until translucent." {
+      ingredient "butter" {
+        to-taste
+      }
+    }
+    step "Add the carrots to the onion and stir. Let them cook for a few minutes over low heat until slightly softened."
+    step "Add the potatoes to the carrots and season with salt and pepper." {
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+    }
+    step "Tie the bay leaves and thyme sprigs together with kitchen twine to form a bouquet garni, and place it into the cooking pot with the vegetables." {
+      ingredient "thyme" "sprigs" {
+        amount 3
+      }
+      ingredient "bay leaf" {
+        amount 2
+      }
+      ingredient "kitchen twine" {
+        to-taste
+      }
+    }
+    step "Pour water into the cooking pot until the potatoes and carrots are half submerged. Bring to a boil, then reduce the heat to low and let simmer for approximately half an hour with the lid slightly ajar, until the vegetables are tender." {
+      ingredient "water" {
+        to-taste
+      }
+    }
+    step "While the vegetables are simmering, melt a knob of butter in a frying pan and fry the chipolata sausages until browned and cooked through. Reduce the heat to low and turn the sausages halfway through the cooking time." {
+      ingredient "butter" {
+        to-taste
+      }
+      ingredient "chipolata sausage" {
+        amount 600 "g"
+      }
+    }
+    step "Once the vegetables are cooked, remove the bouquet garni from the pot. Mash the potatoes and vegetables with any remaining cooking water to a smooth puree. Stir in another knob of butter and season to taste with nutmeg." {
+      ingredient "butter" {
+        to-taste
+      }
+      ingredient "nutmeg" {
+        to-taste
+      }
+    }
+    step "Serve the carrot mash ('stoemp') with chipolata sausages."
+  }
+}

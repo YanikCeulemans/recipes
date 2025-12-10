@@ -187,6 +187,18 @@ module KdlValueParser =
 
             Validation.apply f a
 
+    let alt
+        (parserB: KdlValueParser<'a>)
+        (parserA: KdlValueParser<'a>)
+        : KdlValueParser<'a> =
+        fun value ->
+            match runParser parserA value with
+            | Ok x -> Ok x
+            | Error errsA ->
+                match runParser parserB value with
+                | Ok x -> Ok x
+                | Error errsB -> Error(errsA @ errsB)
+
     module Primitives =
         let str: KdlValueParser<string> =
             function
@@ -201,6 +213,13 @@ module KdlValueParser =
             | other ->
                 Validation.error
                     $"expected KDL int32 value, instead got: '%A{other}'"
+
+        let float: KdlValueParser<float> =
+            function
+            | :? KdlFloat64 as p -> Validation.ok p.Value
+            | other ->
+                Validation.error
+                    $"expected KDL float value, instead got: '%A{other}'"
 
     module Collections =
         let nth
