@@ -1,0 +1,72 @@
+recipe {
+  name "Potato and Zucchini Casserole"
+  tags "savory" "main-course" "casserole" "bake" "comfort-food"
+  duration minutes=60
+
+  image "/images/recipe-ovenschotel-met-aardappel-en-courgette.webp"
+
+  instructions serving=3 {
+    step "Preheat the oven to 200°C."
+    step "Finely chop the onions and mince the garlic." {
+      ingredient "onion" {
+        amount 2
+      }
+      ingredient "garlic" {
+        amount 3 "cloves"
+      }
+    }
+    step "Heat a dash of cooking oil in a pan and sauté the chopped onion and minced garlic for 3-4 minutes." {
+      ingredient "cooking oil" {
+        to-taste
+      }
+    }
+    step "Add the ground meat to the pan and brown it, breaking it apart." {
+      ingredient "ground meat" {
+        amount 500 "g"
+      }
+    }
+    step "Add the tomato paste and cook for one minute, stirring." {
+      ingredient "tomato paste" {
+        amount 2 "tbsp"
+      }
+    }
+    step "Then add the dried oregano, dried basil, paprika powder, and canned diced tomatoes to the pan and let it simmer gently for 10 minutes." {
+      ingredient "dried oregano" {
+        amount 2 "tsp"
+      }
+      ingredient "dried basil" {
+        amount 1 "tsp"
+      }
+      ingredient "paprika powder" {
+        amount 1 "tsp"
+      }
+      ingredient "canned diced tomatoes" {
+        amount 400 "g"
+      }
+    }
+    step "Slice the potatoes and zucchini into thin rounds. Optionally, you can par-boil the potatoes briefly to shorten the baking time." {
+      ingredient "potato" {
+        amount 500 "g"
+      }
+      ingredient "zucchini" {
+        amount 2
+      }
+    }
+    step "Grease a baking dish. Layer the bottom with potato slices, then add half of the ground meat mixture. Cover the meat with zucchini slices. Add the remaining ground meat mixture, then cover again with zucchini slices. Finish with a layer of grated cheese." {
+      ingredient "grated cheese" {
+        amount 50 "g"
+      }
+    }
+    step "Bake the casserole in the preheated oven for 35-45 minutes. Check if the potatoes are tender. If the cheese starts to brown too much, you can cover the baking dish with aluminum foil." {
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+      ingredient "aluminum foil" {
+        to-taste
+      }
+    }
+  }
+}
