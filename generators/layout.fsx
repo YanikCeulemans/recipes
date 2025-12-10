@@ -169,6 +169,9 @@ let private ingredientView
 
     ]
 
+let pluralize count singular plural =
+    $"{count} {if count = 1 then singular else plural}"
+
 let formatDuration (duration: Recipeloader.Duration) =
     match Recipeloader.Duration.extract duration with
     | LessThanAMinute secs when secs = 1 -> "1 second"
@@ -176,8 +179,10 @@ let formatDuration (duration: Recipeloader.Duration) =
     | LessThanAnHour mins when mins = 1 -> "1 minute"
     | LessThanAnHour mins -> $"{mins} minutes"
     | other when other.TotalHours = 1 -> "1 hour"
-    // TODO: This reads 1.3333333333333 hours at the moment
-    | other -> $"{other.TotalHours} hours"
+    | other ->
+        let hours = pluralize other.Hours "hour" "hours"
+        let minutes = pluralize other.Minutes "minute" "minutes"
+        $"{hours} and {minutes}"
 
 let durationView (duration: Recipeloader.Duration) =
     nav [ Class "level" ] [
