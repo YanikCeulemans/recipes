@@ -1,0 +1,58 @@
+recipe {
+  name "Linguini with Mushroom Cream Sauce and Pancetta"
+  tags "belgian" "european" "italian" "main-course" "pasta" "meat"
+  duration minutes=30
+
+  image "/images/recipe-linguini-champignonroomsaus-pancetta.webp"
+
+  instructions serving=4 {
+    step "Cook the linguini pasta al dente in salted water. Peel and finely chop the onion. Peel and mince the garlic. Sauté the chopped onion and minced garlic until translucent in olive oil. Then add the still-frozen mushrooms and cook for another 2 minutes, ensuring most moisture evaporates." {
+      ingredient "linguini" {
+        amount 400 "g"
+      }
+      ingredient "onion" {
+        amount 1
+      }
+      ingredient "garlic" {
+        amount 2 "cloves"
+      }
+      ingredient "olive oil" {
+        to-taste
+      }
+      ingredient "mushroom" "frozen" {
+        amount 500 "g"
+      }
+      ingredient "salt" {
+        to-taste
+      }
+    }
+    step "Stir the flour into the mushrooms and continue to stir-fry for 1 minute. Pour in the vegetable broth and cooking cream, then bring the sauce to a gentle boil over low heat. Optionally, add a little pasta cooking water to make the sauce extra creamy. Season the sauce to taste with salt and pepper." {
+      ingredient "flour" {
+        amount 2 "tbsp"
+      }
+      ingredient "vegetable broth" {
+        amount 200 "ml"
+      }
+      ingredient "cooking cream" {
+        amount 200 "ml"
+      }
+      ingredient "pasta cooking water" "optional" {
+        to-taste
+      }
+      ingredient "salt" {
+        to-taste
+      }
+      ingredient "pepper" {
+        to-taste
+      }
+    }
+    step "Toss the cooked pasta with the sauce and divide it among plates. Garnish with finely chopped parsley and grated Grana Padano cheese." {
+      ingredient "parsley" "finely chopped" {
+        amount 1 "tbsp"
+      }
+      ingredient "Grana Padano" "grated" {
+        amount 30 "g"
+      }
+    }
+  }
+}
