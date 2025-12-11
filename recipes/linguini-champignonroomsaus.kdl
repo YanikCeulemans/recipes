@@ -1,9 +1,9 @@
 recipe {
-  name "Linguini with Mushroom Cream Sauce and Pancetta"
+  name "Linguini with Mushroom Cream Sauce"
   tags "belgian" "european" "italian" "main-course" "pasta" "meat"
   duration minutes=30
 
-  image "/images/recipe-linguini-champignonroomsaus-pancetta.webp"
+  image "/images/recipe-linguini-champignonroomsaus.webp"
 
   instructions serving=4 {
     step "Cook the linguini pasta al dente in salted water. Peel and finely chop the onion. Peel and mince the garlic. Sauté the chopped onion and minced garlic until translucent in olive oil. Then add the still-frozen mushrooms and cook for another 2 minutes, ensuring most moisture evaporates." {
